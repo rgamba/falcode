@@ -1,0 +1,1 @@
+<div style="border: solid 1px red">Include de prueba <?php echo $title ?></div>

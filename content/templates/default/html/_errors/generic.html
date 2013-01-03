@@ -1,0 +1,13 @@
+  <div class="left"></div>
+  <div class="right"></div>
+  <div class="heading">
+    <h1 class="error_header">{$header}</h1>
+  </div>
+
+  <div class="content">
+    <div style="text-align: center; padding: 15px; margin-top: 40px">{$message}
+    {if:$show_login and !$system.is_logged}
+    <br /><a href="{url:login}">{$system.lang.goto_login}</a>
+    {/if}
+    </div>
+  </div>

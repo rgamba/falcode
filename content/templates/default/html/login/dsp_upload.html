@@ -1,0 +1,57 @@
+<script language="javascript" src="{$system.path(js)}swfupload.js"></script>
+<script language="javascript" src="{$system.path(js)}swfupload_fileprogress.js"></script>
+<script language="javascript" src="{$system.path(js)}swfupload_handlers.js"></script>
+
+<script type="text/javascript">
+var swfu;
+
+window.onload = function () {
+    swfu = new SWFUpload({
+        // Backend settings
+        upload_url: "upload.php",
+        file_post_name: "resume_file",
+
+        // Flash file settings
+        file_size_limit : "20 MB",
+        file_types : "*.doc;*.docx;*.ppt;*.pptx;*.xsl;*.xslx;*.png;*.jpg;*.gif;*.zip;*.pdf;*.ai;*.psd",            // or you could use something like: "*.doc;*.wpd;*.pdf",
+        file_types_description : "Todos los archivos permitidos",
+        file_upload_limit : "0",
+        file_queue_limit : "1",
+
+        // Event handler settings
+        swfupload_loaded_handler : swfUploadLoaded,
+        
+        file_dialog_start_handler: fileDialogStart,
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        
+        //upload_start_handler : uploadStart,    // I could do some client/JavaScript validation here, but I don't need to.
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadComplete,
+
+        // Button Settings
+        button_placeholder_id : "spanButtonPlaceholder",
+        button_width: 170,
+        button_height: 30,
+        button_text: '<span class="theFont">Seleccionar archivo</span>',
+        button_text_style: ".theFont { font-size: 16; font-family: arial; text-decoration: underline; color: #1464F4; }",
+        button_text_left_padding: 12,
+        button_text_top_padding: 3,
+        
+        // Flash Settings
+        flash_url : "../swfupload/swfupload.swf",
+
+        custom_settings : {
+            progress_target : "fsUploadProgress",
+            upload_successful : false
+        },
+        
+        // Debug settings
+        debug: false
+    });
+
+};
+</script>

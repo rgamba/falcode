@@ -1,0 +1,44 @@
+{
+"empresa":{
+    "image":{
+        "field":"logo",
+        "width":"500",
+        "height":"500"
+    }
+},
+"promocion":{
+    "image":{
+        "field":"imagen",
+        "width":"500",
+        "height":"500"
+    }
+},
+"producto":{
+    "image":{
+        "field":"imagen",
+        "width":"500",
+        "height":"500"
+    }
+},
+"categoria":{
+    "image":{
+        "field":"imagen",
+        "width":"500",
+        "height":"500"
+    }
+},
+"carousel":{
+    "image":{
+        "field":"imagen",
+        "width":"500",
+        "height":"500"
+    }
+},
+"noticia":{
+    "image":{
+        "field":"imagen",
+        "width":"500",
+        "height":"500"
+    }
+}
+}

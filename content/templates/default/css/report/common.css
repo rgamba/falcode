@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+}
+h1{
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+h2{
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+table{
+    width: 100%;
+}
+.REPORT-HEAD{
+
+}
+.HEADER{
+	color: #ffffff;
+	background: #333333;
+    border-bottom: solid 1px #000000;
+    font-size: 16px;
+}
+
+.SUBHEADER{
+    color: #000000;
+    background: #6FC0F2;
+}
+
+.COLHEADER{
+    background: #ffffff;
+    font-weight: bold; 
+    color: #000000;
+    border-bottom: solid 1px #e6e6e6;
+}
+
+.FOOTER {
+	color: #505050;
+	background: #fff;
+    border-top: solid 1px #000000;
+}
+.FOOTERVAL {
+    color: #000000;
+    background: #ffffff;
+    border-top: solid 1px #000000;
+}
+
+.FIELDS {
+	color: #000000;
+	background: #FEFEFE;
+}
+
+.EVEN {
+	color: #000000;
+	background: #ffffff;
+}
+
+.ODD {
+	color: #000000;
+	background: #f0f0f0;
+}
+
+.BOLD {
+	font-weight: bold;
+}
+
+.BOLDRED {
+	color: #FF0000;
+	font-weight: bold;
+    font-size: 16px;
+}
+
+.PHPREPORTS_PAGE_CELL {
+	font-size:12px;
+	color:#000000;
+}
+
+.PHPREPORTS_PAGE_LINK {
+	font-size:12px;
+	color:#000000;
+}
+
+.PHPREPORTS_PAGE_LINK_BOLD {
+	font-size:16px;
+	font-weight:bold;
+}

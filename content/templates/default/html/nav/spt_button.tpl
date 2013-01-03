@@ -1,0 +1,1 @@
+<a class="button" href="{$link}" onclick="{$onclick}" target="{$target}" style="{$style}"><span>{$label}</span></a>

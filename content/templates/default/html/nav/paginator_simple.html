@@ -1,0 +1,19 @@
+<div class="pagination" style="margin: 5px 0px;">
+<div class="links" style="font-size: 14px;">
+    {if:$Prev}
+        <a title="Primera" href="{$FirstPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><<</a>
+        <a title="Anterior" href="{$PrevPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><</a>
+    {/if}
+    {loop:$paginator,item=item}
+        {if:$item.current}
+            <span class="pag_selected"><b>{$item.PgNum}</b></span>
+        {else}
+            <a href="{$item.PgUrl}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >{$item.PgNum}</a>
+        {/if}
+    {/loop}
+    {if:$Next}
+        <a title="Siguiente" href="{$NextPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >></a>
+        <a title="Última" href="{$LastPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >>></a>
+    {/if}
+</div>
+</div>
