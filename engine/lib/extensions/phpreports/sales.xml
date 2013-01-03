@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE REPORT SYSTEM "PHPReport.dtd">
+<REPORT MARGINWIDTH="5" MARGINHEIGHT="5">
+    <TITLE>Sales Report</TITLE>
+    <BACKGROUND_COLOR>#FFFFFF</BACKGROUND_COLOR>
+    <SQL>select m.id_movimiento as ID, m.fecha as Fecha,m.monto as Total,t.nombre as Terminal, tpv.nombre as TPV from movimiento m inner join terminal t using (id_terminal) inner join tpv using(id_tpv) ORDER BY m.id_tpv,m.id_terminal</SQL>
+    <NO_DATA_MSG>No data was found, check your query</NO_DATA_MSG>
+    <CSS>http://localhost/phpreports/sales.css</CSS>
+    <DOCUMENT>
+        <FOOTER>
+            <ROW>
+                <COL COLSPAN="2" CELLCLASS="FOOTER" TEXTCLASS="BOLDRED" ALIGN="RIGHT">GRAND TOTAL</COL>
+                <COL CELLCLASS="FOOTER" TEXTCLASS="BOLDRED" TYPE="EXPRESSION" ALIGN="RIGHT" NUMBERFORMATEX="2">
+                $this->getSum("Total")</COL>
+            </ROW>
+        </FOOTER>
+    </DOCUMENT>
+    <PAGE BORDER="0" SIZE="0" CELLSPACING="0" CELLPADDING="5">
+        <HEADER>
+            <ROW>
+                <COL CELLCLASS="HEADER" COLSPAN="4">
+                <XHTML>
+                    <TABLE BORDER="0" CELLPADDING="2" CELLSPACING="0" WIDTH="100%">
+                        <TR>
+                            <TD CLASS="HEADER1">
+                            <b>Compras Seguras de Renombre</b>
+                            </TD>
+                            <TD ROWSPAN="2" CLASS="HEADER1" style="background:#A0A0A0;
+                            color:#FFFFFF;" ALIGN="CENTER">
+                            powered by<br/><b>phpreports</b>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD CLASS="HEADER1">
+                            <b>Reporte de pagos</b>
+                            </TD>
+                            </TR>
+                        <TR>
+                            <TD COLSPAN="4"><HR/></TD>
+                        </TR>
+                    </TABLE>
+                </XHTML>
+                </COL>
+                </ROW>
+            </HEADER>
+            <FOOTER>
+            <ROW>
+            <COL ALIGN="RIGHT" COLSPAN="3" CELLCLASS="FOOTER">Pagos procesados:</COL>
+            <COL TYPE="EXPRESSION" CELLCLASS="FOOTER" TEXTCLASS="BOLD" ALIGN="RIGHT">
+            $this->getSum("Total")</COL>
+            </ROW>
+            <ROW>
+            <COL ALIGN="RIGHT" COLSPAN="4" TYPE="EXPRESSION" CELLCLASS="FOOTER">"Página número: ".$this->getPageNum()</COL>
+            </ROW>
+        </FOOTER>
+    </PAGE>
+    <GROUPS>
+        <GROUP NAME="tpv" EXPRESSION="TPV">
+            <HEADER>
+                <ROW>
+                    <COL CELLCLASS="HEADER" ALIGN="RIGHT">TPV:</COL>
+                    <COL CELLCLASS="HEADER" TEXTCLASS="BOLD" TYPE="EXPRESSION" COLSPAN="4">$this->getValue("TPV")</COL>
+                </ROW>
+            </HEADER>
+            <FOOTER>
+                <ROW>
+                    <COL CELLCLASS="FOOTER" ALIGN="RIGHT" TYPE="EXPRESSION">"Total de la TPV ".$this->getValue("TPV")</COL>
+                    <COL CELLCLASS="FIELDS" TEXTCLASS="BOLD" TYPE="EXPRESSION" NUMBERFORMATEX="2">$this->getSum("Total")</COL>
+                </ROW>
+            </FOOTER>
+            <GROUP NAME="terminal" EXPRESSION="Terminal">
+                <HEADER>
+                    <ROW>
+                        <COL CELLCLASS="SUBHEADER" ALIGN="RIGHT">Terminal:</COL>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD" TYPE="EXPRESSION" COLSPAN="4">$this->getValue("Terminal")</COL>
+                    </ROW>
+                    <ROW>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD">ID</COL>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD">Fecha</COL>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD">Total</COL>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD">Terminal</COL>
+                        <COL CELLCLASS="SUBHEADER" TEXTCLASS="BOLD">TPV</COL>
+                    </ROW>
+                </HEADER>
+                <FOOTER>
+                    <ROW>
+                        <COL CELLCLASS="FOOTER" ALIGN="RIGHT" TYPE="EXPRESSION">"Total de la terminal ".$this->getValue("Terminal")</COL>
+                        <COL CELLCLASS="FIELDS" TEXTCLASS="BOLD" TYPE="EXPRESSION" NUMBERFORMATEX="2">$this->getSum("Total")</COL>
+                    </ROW>
+                </FOOTER>
+                <FIELDS>
+                    <ROW>
+                        <COL CELLCLASSEVEN="EVEN" CELLCLASSODD="ODD" CELLCLASS="FIELDS" TYPE="FIELD">ID</COL>
+                        <COL CELLCLASSEVEN="EVEN" CELLCLASSODD="ODD" CELLCLASS="FIELDS" TYPE="FIELD">Fecha</COL>
+                        <COL CELLCLASSEVEN="EVEN" CELLCLASSODD="ODD" CELLCLASS="FIELDS" TYPE="FIELD">Total</COL>
+                        <COL CELLCLASSEVEN="EVEN" CELLCLASSODD="ODD" CELLCLASS="FIELDS" TYPE="FIELD">Terminal</COL>
+                        <COL CELLCLASSEVEN="EVEN" CELLCLASSODD="ODD" CELLCLASS="FIELDS" TYPE="FIELD">TPV</COL>
+                    </ROW>
+                </FIELDS>
+            </GROUP>
+        </GROUP>
+    </GROUPS>
+</REPORT>
