@@ -1,0 +1,22 @@
+allow from all
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# Block access to htaccess
+RewriteRule ^\.htaccess$ - [F]
+# Block access to CLI
+RewriteRule ^cli.php$ - [F]
+
+# URL friendly request parsing
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} .*[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?/? [NC]
+RewriteRule ^(.*)$ falcode/index.php?_route_=$1?%{QUERY_STRING} [NC]
+
+# Common hacks
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteRule ^(.*)$ - [F]
