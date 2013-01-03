@@ -7,7 +7,7 @@
 * 
 * No further modifications needed on this file except
 * for error reporting and output prevent in case
-* of debugging. new
+* of debugging.
 * 
 * @package  FALCODE
 */
