@@ -60,11 +60,13 @@ class ErrorController extends Controller{
             die(json_encode($err));
         }else{
             $this->system->setFlash('json',$err);
-            //die(print_r($_SESSION));
-            if(Sys::get('redirect_on_error'))
+            $_SESSION['test'] = 'prueba';
+
+            if(Sys::get('redirect_on_error')){
                 redirect(Sys::get('redirect_on_error'),false,true);
-            else
+            }else{
                 redirect($_SERVER['HTTP_REFERER'],false,true);
+            }
             die();
         }
     }
@@ -76,11 +78,11 @@ class ErrorController extends Controller{
         $this->template->message=Lang::get('under_maintenance_msg').": $message.";
     }
 
-    public function CustomError($message){
+    public function CustomError($header,$message){
         $this->title(Lang::get('unknown_error'));
         $this->load->view("generic");
-        $this->template->header=Lang::get('unknown_error');
-        $this->template->message=Lang::get('unknown_error');
+        $this->template->header=$header;
+        $this->template->message=$message;
     }
 
     public function UnknownError($message){

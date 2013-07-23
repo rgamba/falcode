@@ -66,7 +66,7 @@ function friendly_date($timestamp=NULL,$aprox=true,$format='d-m-Y'){
     $now=time();
     if(date('d-m-Y',$timestamp)==date('d-m-Y',$now)){
         // Today
-        return "hoy";
+        return Lang::get("today");
     }
     if($timestamp<$now){
         // Past

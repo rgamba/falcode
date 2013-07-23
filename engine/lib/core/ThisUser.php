@@ -10,7 +10,7 @@
 * @version      3.0
 * @author       FALCODE
 */
-class User{    
+class ThisUser{
     // Variables
     private static $role=NULL;
     
@@ -63,7 +63,7 @@ class User{
     
     public static function configuration($var,$val=NULL){
         $Usuario = new UsuarioConfig();
-        $Usuario->where("id_usuario = {0} AND var = '{1}'",self::get("id_usuario"),$var)->execute();
+        $Usuario->where("id_user = {0} AND var = '{1}'",self::get("id_user"),$var)->execute();
         if($Usuario->rows <= 0){
             // No hay registro
             if(is_null($val)){
@@ -74,7 +74,7 @@ class User{
                     $val = array($val);
                 foreach($val as $_v){
                     $Usuario->clear();
-                    $Usuario->id_usuario = self::get("id_usuario");
+                    $Usuario->id_user = self::get("id_user");
                     $Usuario->var = $var;
                     $Usuario->val = $_v;
                     $Usuario->save();
@@ -96,18 +96,18 @@ class User{
                 if($val === ""){
                     // Borramos
                     $db = Db::getInstance();
-                    $db->query("DELETE FROM usuario_config WHERE id_usuario = '".self::get("id_usuario")."' AND var = '".$db->escape($var)."'");
+                    $db->query("DELETE FROM usuario_config WHERE id_user = '".self::get("id_user")."' AND var = '".$db->escape($var)."'");
                     return true;
                 }else{
                     if(!is_array($val))
                         $val = array($val);
                     foreach($val as $_v){
                         // Checamos si ya existe combinacion user/var/val
-                        $Usuario->where("id_usuario = {0} AND var = '{1}' AND val = '{2}'",self::get("id_usuario"),$var,$_v)->execute();
+                        $Usuario->where("id_user = {0} AND var = '{1}' AND val = '{2}'",self::get("id_user"),$var,$_v)->execute();
                         if($Usuario->rows > 0)
                             continue;
                         $Usuario->clear();
-                        $Usuario->id_usuario = self::get("id_usuario");
+                        $Usuario->id_user = self::get("id_user");
                         $Usuario->var = $var;
                         $Usuario->val = $_v;
                         $Usuario->save();
@@ -138,7 +138,7 @@ class User{
             return false;
         }
         $UN = new UsuarioNotificacion();
-        $UN->select(NULL,"WHERE id_usuario = '".$id_usuario."'");
+        $UN->select(NULL,"WHERE id_user = '".$id_usuario."'");
         if($UN->rows>0){
             $UN->next();
             $vars = $UN->recordset();
@@ -173,7 +173,7 @@ class User{
     */
     public function __get($key=NULL){
         if($key=="id")
-            $key="id_usuario";
+            $key="id_user";
         return self::get($key);
     }
     

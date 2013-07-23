@@ -1,0 +1,12 @@
+<h1>Images example</h1>
+<p>This example uses the test image inside content/_files/images/test/falcon.jpg as if it was uploaded by a user</p>
+<h2>Original image:</h2>
+<img src="{url:image?_path=test}falcon.jpg" />
+<h2>Resize to 200px width</h2>
+<img src="{url:image?_path=test&_path=200xauto}falcon.jpg" />
+<h2>Resize to 200px height</h2>
+<img src="{url:image?_path=test&_path=autox200}falcon.jpg" />
+<h2>Crop to 200x200</h2>
+<img src="{url:image?_path=test&_path=200x200}falcon.jpg" />
+<h2>Crop to 200x200 without losing any image section</h2>
+<img src="{url:image?_path=test&_path=200x200&_path=inside}falcon.jpg" />

@@ -428,25 +428,10 @@ function stripslashes_rec(&$element)
 function log_event($event,$msg){
     $db = Db::getInstance();
     $db->insert("logger",array(
-        'evento' => $event,
-        'mensaje' => $msg,
-        'fecha' => "now()"
+        'event' => $event,
+        'message' => $msg,
+        'date' => "now()"
     ));
-}
-
-/**
- * Función para enviar correos  (Nose si sirve)  !!!!!
- */
-function enviar_mail($de,$aliasDe,$para,$titulo,$mensaje,$is_html=true){
-    $Mail=new Mail();
-    $Mail->to($para);
-    $Mail->from($de,$aliasDe);
-    $Mail->replyTo($de,$aliasDe);
-    $Mail->subject($titulo);
-    $Mail->body($mensaje);
-    $Mail->html($is_html==true);
-    $Mail->send();
-    return;
 }
 
 /*
@@ -478,7 +463,7 @@ function  time_format($timestamp,$lang="es",$format="d-h-s"){
         $segs = $mins-floor($mins);
         $mins = floor($mins);
         $segs = floor($segs*60);
-        $result = $horas." horas ".$mins." mins ";//$segs." segs";  
+        $result = $horas." hours ".$mins." mins ";//$segs." segs";
     }
     return $result;    
 }

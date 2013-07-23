@@ -1,0 +1,56 @@
+<h1>Template Engine Modifiers example</h1>
+<table class="test">
+    <thead>
+    <tr>
+        <td>Variable</td>
+        <td>Modifier(s)</td>
+        <td>Result</td>
+    </tr>
+    </thead>
+    <tr>
+        <td>$name</td>
+        <td></td>
+        <td>{$name}</td>
+    </tr>
+    <tr>
+        <td>$name</td>
+        <td>upper()</td>
+        <td>{$name.upper()}</td>
+    </tr>
+    <tr>
+        <td>$name</td>
+        <td>upper(),replace()</td>
+        <td>{$name.upper().replace(" ","-")}</td>
+    </tr>
+    <tr>
+        <td>$data['name']</td>
+        <td>default(),capitalize()</td>
+        <td>{$data.name.default("No name assigned").capitalize()}</td>
+    </tr>
+    <tr>
+        <td>$data['bday']</td>
+        <td>date()</td>
+        <td>{$data.bday.date("verbose")}</td>
+    </tr>
+    <tr>
+        <td>$data['bday']</td>
+        <td>date()</td>
+        <td>{$data.bday.date("d/m/Y")}</td>
+    </tr>
+    <tr>
+        <td>$now_gmt</td>
+        <td>toLocal(),date()</td>
+        <td>{$now_gmt.toLocal().date("H:i:s")}</td>
+    </tr>
+</table>
+
+<style>
+    table.test td{
+        padding: 3px 5px;
+        border-bottom: solid 1px black;
+    }
+    table.test thead td{
+        font-weight: bold;
+        background: #e6e6e6;
+    }
+</style>

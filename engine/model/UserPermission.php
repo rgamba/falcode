@@ -1,24 +1,24 @@
 <?php
 /**
-* [Table:usuario_permiso]
-* UsuarioPermiso.php
+* [Table:uri]
+* Uri.php
 * 
-* @package     FALCODE  
+* @package     BM
 * @author      $Autor$
 * @copyright   $Copyright$
 * @version     $Version$
 * @access      public
 * @uses        ActiveRecord
 */
-class UsuarioPermiso extends ActiveRecord{
+class UserPermission extends ActiveRecord{
     /**
     * Table name definition
     */
-    protected static $table_name="usuario_permiso";
+    protected static $table_name="user_permission";
     /**
     * Primary key column name
     */
-    protected static $primary_key="id_usuario_permiso";
+    protected static $primary_key="id_user_permission";
     /**
     * Prefix
     */

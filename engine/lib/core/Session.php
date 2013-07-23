@@ -3,15 +3,12 @@ class Session{
     private $db;
 
     public static function start(){
+        //session_name(Sys::get("config")->session_name);
         ini_set('session.hash_function',1); // SHA1 algorithm
         ini_set('session.gc_maxlifetime', Sys::get("config")->session_expire);
         ini_set('session.cookie_domain',Sys::get("config")->session_domain);
-        session_name(Sys::get("config")->session_name);
         session_set_cookie_params(0, '/', Sys::get("config")->session_domain);
 
-        //ini_set('session.cookie_domain','.torneodeideas.com');
-        //session_name("torneodeideas");
-        //session_set_cookie_params(0, '/', '.torneodeideas.com');
         session_start();
 
         if(Sys::get("config")->session_save_on_db == true){

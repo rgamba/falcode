@@ -20,7 +20,7 @@ class AccessControl{
     const ACCESS_ALL="all";
     const AUTO_REDIRECT_ON_DENY=true;
     const DIE_ON_DENY=true;
-    const MSG_ON_DENY="Lo sentimos, usted no tiene los permisos necesarios para acceder a esta zona.";
+    const MSG_ON_DENY="Access denied";
     const STRICT_MODE=false;
     
     private static $instance=NULL;
@@ -119,7 +119,7 @@ class AccessControl{
             $role=array($role);
 
         if($action!=self::ALLOW && $action!=self::DENY)
-            throw new Exception("Tipo de acceso invalido");
+            throw new Exception("Invalid access type");
         
         // Recorremos por cada uno de los roles
         foreach($role as $_role){
@@ -212,10 +212,10 @@ class AccessControl{
         if(is_string($rol))
             $rol=new UserRole($rol);
         if(!($rol instanceof UserRole))
-            throw new Exception("El objeto rol debe ser de tipo UserRole");
+            throw new Exception("$role must be a UserRole type");
         $roleId=$rol->getRoleId();
         if(!$this->getRoleRegistry()->roleExists($roleId))
-            throw new Exception("El rol <b>$roleId</b> no esta registrado en UserRoleRegistry");
+            throw new Exception("The role <b>$roleId</b> is not yet registered in UserRoleRegistry");
             
         // Accesos heredados
         $inherited=$this->getInheritedPermissions($roleId);
@@ -325,12 +325,12 @@ class AccessControl{
         // Para control en subdominios... o tiene acceso particular al subdominio o tiene acceso general
         // cualquiera de las dos condiciones da acceso
         $sub=SUBDOMAIN=="" ? "*" : SUBDOMAIN;
-        $allow=$this->isAllowed(User::getRoleId(),DSP_MODULE,DSP_CONTROL,$sub) || $this->isAllowed(User::getRoleId(),DSP_MODULE,DSP_CONTROL,'*');
+        $allow=$this->isAllowed(ThisUser::getRoleId(),DSP_MODULE,DSP_CONTROL,$sub) || $this->isAllowed(ThisUser::getRoleId(),DSP_MODULE,DSP_CONTROL,'*');
         if($return)
             return $allow;
         if(!$allow){
             if(self::AUTO_REDIRECT_ON_DENY){
-                if(User::getRoleId()==UserRole::USER_PUBLIC && DSP_MODULE!='content' && DSP_MODULE!='login')
+                if(ThisUser::getRoleId()==UserRole::USER_PUBLIC && DSP_MODULE!='content' && DSP_MODULE!='login')
                     $_SESSION['_fwd_']=DSP_MODULE.'/'.DSP_CONTROL;
                 $this->redirectFail();
             }else
@@ -348,7 +348,7 @@ class AccessControl{
     * @param mixed $sub
     */
     final public function isAllowedOnLocation($module,$control,$sub=""){
-        return $this->isAllowed(User::getRoleId(),$module,$control,$sub) || $this->isAllowed(User::getRoleId(),$module,$control,'*');
+        return $this->isAllowed(ThisUser::getRoleId(),$module,$control,$sub) || $this->isAllowed(ThisUser::getRoleId(),$module,$control,'*');
     }
     
     /**
@@ -417,7 +417,7 @@ class AccessControl{
     * @param mixed $role
     */
     final public function setRole($role){
-        return User::setRole($role);
+        return ThisUser::setRole($role);
     }
     
     /**
@@ -426,7 +426,7 @@ class AccessControl{
     * @param mixed $role
     */
     final public function getRole(){
-        return User::getRoleId();
+        return ThisUser::getRoleId();
     }
     
     /**

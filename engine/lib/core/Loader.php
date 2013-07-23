@@ -99,7 +99,7 @@ class Loader{
         if($ext[count($ext)-1]!="js"){
             $file.='.js';
         }
-        Sys::$JS_Files[]=HTTP.HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/js/$file";
+        Sys::$JS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/js/$file";
     }
     
     public function css($file){

@@ -151,7 +151,7 @@ class Request{
             }
         }
         if($throw_exception && !empty($errors)){
-            Sys::setErrorMsg("Revisa los campos en rojo");
+            Sys::setErrorMsg(Lang::get('validation_error'));
             Sys::get('module_controller')->throwValidationError($errors);
         }else{
             return empty($errors);

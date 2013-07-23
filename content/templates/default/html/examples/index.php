@@ -41,7 +41,7 @@
         <a href="<?php echo url('examples/modifiers'); ?>">Template engine modifiers</a>
     </li>
     <li>
-        <a href="<?php echo url('examples/dates'); ?>">Dates</a>
+        <a href="<?php echo url('examples/advanced_tpl'); ?>">Advanced template engine constructs</a>
     </li>
     <li>
         <a href="<?php echo url('examples/images'); ?>">Image manipulation</a>
@@ -54,14 +54,5 @@
     </li>
     <li>
         <a href="<?php echo url('examples/ajax'); ?>">AJAX</a>
-    </li>
-    <li>
-        <a href="<?php echo url('examples/url_map'); ?>">URL Mapping</a>
-    </li>
-    <li>
-        <a href="<?php echo url('examples/language'); ?>">Multi language</a>
-    </li>
-    <li>
-        <a href="<?php echo url('examples/geolocation'); ?>">Geolocation</a>
     </li>
 </ul>

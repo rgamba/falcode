@@ -51,7 +51,7 @@ if(Sys::get('config')->enable_memcached){
 */
 if(!empty($_SESSION['_login_fwd_'])){
     require_once(PATH_CORE.'_misc.php');
-    if(User::islogged()){
+    if(ThisUser::islogged()){
         if(!empty($_SESSION['_login_fwd_']['post']))
             $_SESSION['_POST'] = $_SESSION['_login_fwd_']['post'];
         $red=$_SESSION['_login_fwd_']['module'].(!empty($_SESSION['_login_fwd_']['control']) ? '/' . $_SESSION['_login_fwd_']['control'] : '');
@@ -128,7 +128,7 @@ Core::autoIncludeFiles();
 // Access control list
 if(Sys::get('config')->login_required===true){
     // Check for cookies to auto login
-    if(Sys::get('config')->login_set_cookie && !User::islogged()){
+    if(Sys::get('config')->login_set_cookie && !ThisUser::islogged()){
         if(Auth::hasCookie()){
             try{
                 Auth::attemptLogin();
@@ -161,7 +161,7 @@ Core::setLang();
 Core::setCurrency();
 
 // FB
-if(!User::isLogged() && Sys::get('config')->login_required){
+if(!ThisUser::isLogged() && Sys::get('config')->login_required){
     Auth::initFb();
     $fb_login_url = Sys::get('fb')->getLoginUrl(array(
         'scope' => 'email,user_about_me,user_location,publish_actions'
@@ -201,9 +201,9 @@ TemplateEngine::setGlobals(array(
        'session_id' => session_id(),
        'server' => $_SERVER,
        'const' => get_defined_constants(),
-       'user' => User::getLoginSession(),
-       'user_rol' => User::getRoleId(),
-       'user_role' => User::getRoleId(),
+       'user' => ThisUser::getLoginSession(),
+       'user_rol' => ThisUser::getRoleId(),
+       'user_role' => ThisUser::getRoleId(),
        'pathway' => Router::$path,
        'module' => DSP_MODULE,
        'control' => DSP_CONTROL,
@@ -211,7 +211,7 @@ TemplateEngine::setGlobals(array(
        'path' => array(
            'http' => HTTP
        ),
-       'is_logged' => User::isLogged(),
+       'is_logged' => ThisUser::isLogged(),
        'files' => array(
            'css' => Sys::$CSS_Files,
            'js' => Sys::$JS_Files

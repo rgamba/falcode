@@ -1,0 +1,14 @@
+<h1>Advanced Template constructs example</h1>
+
+{if:$user_role.upper() == "ADMIN"}
+    <p>Welcome Administrator</p>
+{elseif:$user_role.upper() == "MEMBER" || $user_role.upper() == "TEAM"}
+    <p>Welcome member of the community</p>
+{else}
+    <p>You are not a registered user</p>
+{/if}
+
+<hr>
+<h2>Build complex URLs with modifiers</h2>
+<br>
+{url:user/view?username=$username.upper().sha1()}

@@ -264,7 +264,7 @@ abstract class Controller{
                 break;
             case "user":
                 if(empty($this->_user)){
-                    $this->_user = new User();
+                    $this->_user = new ThisUser();
                 }
                 return $this->_user;
                 break;

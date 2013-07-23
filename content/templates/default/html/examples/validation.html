@@ -1,0 +1,41 @@
+<script type="text/javascript">
+    // This function is for the Submit With Ajax button only
+    $(function(){
+        $("#ajax_submit").click(function(){
+            $.post($("#frm").attr("action"),$("#frm").serialize(),function(data){
+                if(data.result != "error")
+                    alert(data.message);
+            },"json");
+        });
+    })
+</script>
+
+<h1>Form validation example</h1>
+<form action="{url:examples/validate_form}" method="post" enctype="multipart/form-data" id="frm">
+    <input name="context" value="form" type="hidden" />
+    <table class="test">
+        <tr>
+            <td>Email:</td>
+            <td><input type="text" name="email" value="{$system.post.email}" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" name="password" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Submit" />&nbsp;
+                <input type="button" value="Submit with AJAX" id="ajax_submit" />
+            </td>
+        </tr>
+    </table>
+</form>
+<hr>
+<p>To change the way errors are displayed, change the file content/templates/default/css/_falcode.css in the validation section
+<br>For a more advanced customization of the error displaying, check out the Mod.G.inspectJsonResponse function inside _z_general.js
+</p>
+<style>
+    table.test td{
+        padding: 3px 5px;
+    }
+</style>

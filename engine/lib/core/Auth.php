@@ -22,7 +22,7 @@ class Auth{
     * @param mixed $post $_POST
     */ 
     public static function attemptLogin($post=NULL){
-        if(User::islogged())
+        if(ThisUser::islogged())
             return true;
         if(is_null($post))
             $post=$_POST;
@@ -30,7 +30,7 @@ class Auth{
         // Verificamos login por cookies
         if(Sys::get('config')->login_set_cookie==true && empty($post) && self::hasCookie()){
             if(self::hasCookie()){
-                $U=new Usuario();
+                $U=new User();
                 $U->select(NULL,"WHERE SHA1(CONCAT(".Sys::get('config')->user_username_field.",".Sys::get('config')->user_password_field.")) = '".Sys::$Db->escape($_COOKIE[self::COOKIE_NAME])."'");
                 if($U->rows>0){
                     $cookie=$U->next();
@@ -40,13 +40,13 @@ class Auth{
             }
         }
         
-        if(User::islogged())
+        if(ThisUser::islogged())
             return true;
         
         if(empty($post))
             return false;
         
-        if(User::getAttempts()>=Sys::get('config')->login_attempts){
+        if(ThisUser::getAttempts()>=Sys::get('config')->login_attempts){
             self::throwException(Sys::get('config')->login_max_tries);
             return false;
         }
@@ -58,14 +58,14 @@ class Auth{
         $query=str_replace(array('{0}','{1}'),array($post[Sys::get('config')->user_username_field],$post[Sys::get('config')->user_password_field]),$query);
         $pass=@Sys::$Db->query($query);
         if(@Sys::$Db->numRows()<=0){
-            User::addTry();
+            ThisUser::addTry();
             self::throwException(Sys::get('config')->login_error_msg);
             return false;
         }
         
         if(self::SES_REGISTER_TABLE_FIELDS==1)
             self::registerVars($pass);
-        User::clearAttempts();
+        ThisUser::clearAttempts();
         if(!empty($post['set_cookie']) && Sys::get('config')->login_set_cookie==true){
             self::setCookie($post[Sys::get('config')->user_username_field],$post[Sys::get('config')->user_password_field]);
         }else{
@@ -95,8 +95,8 @@ class Auth{
     private static function registerVars($qry){
         $arr=@Sys::$Db->getRow($qry);
         foreach($arr as $i => $val)
-            User::set($i,$val);
-        User::setRole(new UserRole($arr[Sys::get('config')->user_lvl_field]));
+            ThisUser::set($i,$val);
+        ThisUser::setRole(new UserRole($arr[Sys::get('config')->user_lvl_field]));
         return true;
     }
     
@@ -105,7 +105,7 @@ class Auth{
     * 
     */
     public static function logout(){
-        User::wipeSession();
+        ThisUser::wipeSession();
         self::deleteCookie();
         return true;
     }
@@ -146,8 +146,8 @@ class Auth{
             // Proceed knowing you have a logged in user who's authenticated.
             $user_info = Sys::get('fb')->api('/me');
             // Vemos si ya existe el usuario
-            $Usuario = new Usuario();
-            $Usuario->where("usuario = '".Sys::get('db')->escape($user_info['email'])."'")->execute();
+            $Usuario = new User();
+            $Usuario->where(Sys::get('config')->user_username_field." = '".Sys::get('db')->escape($user_info['email'])."'")->execute();
             if($Usuario->rows > 0){
                 // La direccion de email ya esta registrada
                 $u = $Usuario->next();
@@ -166,25 +166,22 @@ class Auth{
                 // Registramos el nuevo usuario
                 $Usuario->clear();
                 $Usuario->populate(array(
-                    'id_usuario_rol' => 4,
-                    'activo' => 1,
-                    'codigo_act' => 'fb'.uniqid(),
-                    'fecha_creacion' => 'now()',
-                    'nombre' => $user_info['first_name'],
-                    'apellidos' => $user_info['last_name'],
-                    'usuario' => $user_info['email'],
+                    'id_user_role' => 4,
+                    'active' => 1,
+                    'activation' => 'fb'.uniqid(),
+                    'date_creation' => 'now()',
+                    'name' => $user_info['first_name'],
+                    'last_name' => $user_info['last_name'],
+                    'username' => $user_info['email'],
                     'pass' => $user_info['id'],
                     'email' => $user_info['email'],
-                    'nombre_real' => $user_info['name'],
-                    'nombre_display' => $user_info['name'],
                     'fb_id' => $user_info['id']
                 ))->save();
                 $id_usuario = Sys::get('db')->lastId();
-                $_POST['uri_alias'] = "perfiles/".$user_info['name'];
                 Sys::get("loader")->helper("uri");
         
                 Auth::attemptLogin(array(
-                    'usuario' => $user_info['email'],
+                    'username' => $user_info['email'],
                     'pass' => $user_info['id']
                 ));
             }

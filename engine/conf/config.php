@@ -20,13 +20,13 @@ $config['cron_token'] = "cronsecure"; // <- CHANGE THIS
 $config['base_currency'] = "USD"; 
 $config['session_save_on_db'] = false;
 $config['session_expire'] = 86000;
-$config['session_name'] = APP_NAME;
-$config['session_domain'] = ".[yourdomainhere].com";
+$config['session_name'] = "falcode";
+$config['session_domain'] = ".falcode.org";
 // Database
 $config['db_host'] = "localhost";
 $config['db_user'] = "root"; // <- CHANGE THIS
 $config['db_pass'] = ""; // <- CHANGE THIS
-$config['db_name'] = ""; // <- CHANGE THIS
+$config['db_name'] = "falcode"; // <- CHANGE THIS
 $config['db_engine'] = "MySQL";
 $config['db_auto_connect'] = false;
 $config['db_show_errors'] = true;

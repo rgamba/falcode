@@ -1,24 +1,24 @@
 <?php
 /**
-* [Table:usuario_config]
-* UsuarioConfig.php
+* [Table:uri]
+* Uri.php
 * 
-* @package     FALCODE  
+* @package     BM
 * @author      $Autor$
 * @copyright   $Copyright$
 * @version     $Version$
 * @access      public
 * @uses        ActiveRecord
 */
-class UsuarioConfig extends ActiveRecord{
+class UserRole extends ActiveRecord{
     /**
     * Table name definition
     */
-    protected static $table_name="usuario_config";
+    protected static $table_name="user_role";
     /**
     * Primary key column name
     */
-    protected static $primary_key="id_usuario_config";
+    protected static $primary_key="id_user_role";
     /**
     * Prefix
     */

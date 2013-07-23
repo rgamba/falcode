@@ -362,8 +362,8 @@ class Core{
     */
     public static function setTimezone(){
         $tz = Sys::get('config')->timezone;
-        if(User::islogged()){
-            $utz = User::get("timezone");
+        if(ThisUser::islogged()){
+            $utz = ThisUser::get("timezone");
             if(!empty($utz)){
                 $tz = $utz;
             }
@@ -384,15 +384,15 @@ class Core{
         $langCode = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
         if(!empty($_REQUEST[LANG_CTRL_VAR]) && file_exists(PATH_ENGINE_LANG.$langCode.'.php')){
             $langCode = $_REQUEST[LANG_CTRL_VAR];
-            if(User::islogged()){
-                $User = Usuario::find(User::get("id_usuario"));
+            if(ThisUser::islogged()){
+                $User = Usuario::find(ThisUser::get("id_user"));
                 $User->lang = $_REQUEST[LANG_CTRL_VAR];
                 $User->save();
-                User::set("lang",$_REQUEST[LANG_CTRL_VAR]);
+                ThisUser::set("lang",$_REQUEST[LANG_CTRL_VAR]);
             }
         }else{
-            if(User::islogged() && User::get("lang") != ""){
-                $langCode = User::get("lang");
+            if(ThisUser::islogged() && ThisUser::get("lang") != ""){
+                $langCode = ThisUser::get("lang");
             }
         }
 
@@ -415,11 +415,11 @@ class Core{
         $db = Db::getInstance();
 
         if(!empty($_REQUEST['currency'])){
-            $moneda = $db->fetch("SELECT * FROM moneda WHERE currency_code = '".$db->escape($_REQUEST['currency'])."' AND activa = 1");
+            $moneda = $db->fetch("SELECT * FROM currency WHERE currency_code = '".$db->escape($_REQUEST['currency'])."' AND active = 1");
             if($moneda->num_rows <= 0)
                 return;
-            if(User::isLogged()){
-                $User = Usuario::find(User::get("id_usuario"));
+            if(ThisUser::isLogged()){
+                $User = Usuario::find(ThisUser::get("id_user"));
                 $User->currency = $_REQUEST['currency'];
                 $User->save();
             }
@@ -427,11 +427,11 @@ class Core{
         }else{
             if(!empty($_SESSION['currency']))
                 return;
-            if(User::isLogged() && User::get("currency") != ""){
-                if(User::get("currency") != "")
-                    $_SESSION['currency'] = User::get("currency");
+            if(ThisUser::isLogged() && ThisUser::get("currency") != ""){
+                if(ThisUser::get("currency") != "")
+                    $_SESSION['currency'] = ThisUser::get("currency");
             }else{
-                $geo = $db->fetch("SELECT m.* FROM geolocation INNER JOIN moneda m USING(iso_3166_2) WHERE ('".$db->escape(ip2long($_SERVER['REMOTE_ADDR']))."' BETWEEN ip_start AND ip_end) AND m.activa = 1");
+                $geo = $db->fetch("SELECT m.* FROM geolocation INNER JOIN currency m USING(iso_3166_2) WHERE ('".$db->escape(ip2long($_SERVER['REMOTE_ADDR']))."' BETWEEN ip_start AND ip_end) AND m.active = 1");
                 if($geo->num_rows > 0){
                     $_SESSION['currency'] = $geo->row['currency_code'];
                 }
