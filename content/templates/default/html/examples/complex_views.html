@@ -1,0 +1,24 @@
+<h1>Complex views with template engine example</h1>
+<h2>Simple array: colors</h2>
+<ul>
+    {loop:$colors,item=color}
+    <li>{$color}</li>
+    {/loop}
+</ul>
+<hr>
+<h2>Complex array: Contacts</h2>
+<br>
+<table>
+    <thead>
+    <tr>
+        <td style="width: 200px; font-weight: bold">Name</td>
+        <td style="font-weight: bold">Phone</td>
+    </tr>
+    </thead>
+    {loop:$contacts,item=contact}
+    <tr>
+        <td>{$contact.name}</td>
+        <td>{$contact.phone}</td>
+    </tr>
+    {/loop}
+</table>

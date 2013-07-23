@@ -1,0 +1,12 @@
+<h1>Dynamic includes with template engine example</h1>
+<p>This loads an external view from the file content/templates/default/html/nav/test.html (all template engine includes can access the parent's view variables):</p>
+{include:nav/test.html}
+<br>
+<p>PHP includes can also be loaded from template engine include calls:</p>
+{include:nav/test.php}
+<br>
+<p>This is a dynamic include that is handeled with an external controller with the same name in the location controller/default/nav/test.php:</p>
+{include:nav/test.html,find_controller}
+<br>
+<p>This loads an external view from the file content/templates/default/html/nav/nested_includes.html, which loads a dynamic view itself:</p>
+{include:nav/nested_includes.html,find_controller}

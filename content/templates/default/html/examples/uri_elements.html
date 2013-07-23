@@ -1,0 +1,25 @@
+<h1>URL elements examples</h1>
+        <table>
+            <tr>
+                <td style="width: 150px">Id:</td>
+                <td>{$id}</td>
+            </tr>
+            <tr>
+                <td>Year (path 0):</td>
+                <td>{$year}</td>
+            </tr>
+            <tr>
+                <td>Month: (path 1)</td>
+                <td>{$month}</td>
+            </tr>
+            <tr>
+                <td>File (path 2):</td>
+                <td>{$file}</td>
+            </tr>
+            {loop:$system.get,item=val,key=var}
+            <tr>
+                <td>GET var <b>{$var}</b>:</td>
+                <td>{$val}</td>
+            </tr>
+            {/loop}
+        </table>

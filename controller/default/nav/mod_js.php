@@ -1,7 +1,8 @@
 <?php
 /**
-* Modulo Dinamico
-* ---
-* Archivos Javascript
+* Load the javascript files using a dynamic include
 */
-$tpl->js=Sys::$JS_Files;
+$data['js'] = Sys::$JS_Files;
+
+if($tpl)
+    $tpl->setContext($data);

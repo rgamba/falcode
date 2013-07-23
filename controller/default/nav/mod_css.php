@@ -1,7 +1,8 @@
 <?php
 /**
-* Módulo Dinamico
-* ---
-* Hojas de estilo CSS
+* Loads CSS files using a dynamic include
 */
-$tpl->css=Sys::$CSS_Files;
+$data['css'] = Sys::$CSS_Files;
+
+if($tpl)
+    $tpl->setContext($data);

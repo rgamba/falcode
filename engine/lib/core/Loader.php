@@ -40,6 +40,7 @@ class Loader{
     }
     
     public function view($file=null,$vars=array(),$alias="template"){
+
         $ext=explode('.',$file);
         if(empty($ext[1]) && !empty($ext[0]))
             $file.=".".Sys::get('config')->tpl_default_extension;
@@ -48,12 +49,13 @@ class Loader{
                 include_once(PATH_CONTROLLER_MODULES.$vars);
                 $vars = $data;
             }
-        } 
+        }
 
         $root=Tpl::moduleHtmlPath();
         $tpl=new TemplateEngine();
         $tpl->root=Tpl::htmlPath();
         $tpl->controller_root=PATH_CONTROLLER_MODULES.'/';
+
         if(empty($file)){
             if(DSP_CONTROL==""){
                 if(Controller::$default_action!=""){
@@ -65,6 +67,7 @@ class Loader{
                 $file=DSP_CONTROL.".html";
             }
         }
+
         $tpl->load($root.$file);
         if($vars)
             $tpl->setContext($vars);

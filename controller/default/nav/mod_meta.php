@@ -1,8 +1,9 @@
 <?php
 /**
-* Modulo Dinamico
-* ---
-* Meta Tags
+* Set metadata information
 */
-$tpl->assign('META_DESCRIPTION',Tpl::get(META_DESCRIPTION));
-$tpl->assign('META_KEYWORDS',Tpl::get(META_KEYWORDS));
+$data['META_DESCRIPTION'] = Tpl::get(META_DESCRIPTION);
+$data['META_KEYWORDS'] = Tpl::get(META_KEYWORDS);
+
+if($tpl)
+    $tpl->setContext($data);

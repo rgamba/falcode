@@ -48,7 +48,7 @@ $config['ctrl_default_module'] = "index";
 $config['ctrl_enable_mod_rewrite'] = true;
 $config['ctrl_controller_file'] = "ModuleController.php";
 // Lang
-$config['lang_default'] = "es";
+$config['lang_default'] = "en";
 // Login
 $config['login_encode_pass'] = false;
 $config['login_required'] = false;
