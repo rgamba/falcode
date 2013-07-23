@@ -55,7 +55,6 @@ class Loader{
         $tpl=new TemplateEngine();
         $tpl->root=Tpl::htmlPath();
         $tpl->controller_root=PATH_CONTROLLER_MODULES.'/';
-
         if(empty($file)){
             if(DSP_CONTROL==""){
                 if(Controller::$default_action!=""){

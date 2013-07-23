@@ -12,7 +12,7 @@
 /**
  * Application definition
  */
-define('APP_NAME','Torneo de Ideas');
+define('APP_NAME','My Falcode App');
 define('APP_VER','1.0');
 
 /**

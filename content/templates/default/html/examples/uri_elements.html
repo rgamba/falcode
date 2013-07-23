@@ -1,25 +1,35 @@
 <h1>URL elements examples</h1>
-        <table>
-            <tr>
-                <td style="width: 150px">Id:</td>
-                <td>{$id}</td>
-            </tr>
-            <tr>
-                <td>Year (path 0):</td>
-                <td>{$year}</td>
-            </tr>
-            <tr>
-                <td>Month: (path 1)</td>
-                <td>{$month}</td>
-            </tr>
-            <tr>
-                <td>File (path 2):</td>
-                <td>{$file}</td>
-            </tr>
-            {loop:$system.get,item=val,key=var}
-            <tr>
-                <td>GET var <b>{$var}</b>:</td>
-                <td>{$val}</td>
-            </tr>
-            {/loop}
-        </table>
+<table>
+    <tr>
+        <td style="width: 150px">Id:</td>
+        <td>{$id}</td>
+    </tr>
+    <tr>
+        <td>Year (path 0):</td>
+        <td>{$year}</td>
+    </tr>
+    <tr>
+        <td>Month: (path 1)</td>
+        <td>{$month}</td>
+    </tr>
+    <tr>
+        <td>File (path 2):</td>
+        <td>{$file}</td>
+    </tr>
+    {loop:$system.get,item=val,key=var}
+    <!-- The above is the same as:
+    foreach($_GET as $var => $val):
+    -->
+    <tr>
+        <td>GET var <b>{$var}</b>:</td>
+        <td>{$val}</td>
+    </tr>
+    {/loop}
+</table>
+<br>
+<h2>How to replicate the current URL:</h2>
+<p>{url:examples/uri_elements?id=$id&_path=$year&_path=$month&_path=$file&referer=home}?name=Rick</p>
+<!-- Which is the same as:
+<?php echo url('examples/uri_elements?id=$id&_path=$year&_path=$month&_path=$file&referer=home').'?name=Rick'; ?>
+in a PHP file
+-->

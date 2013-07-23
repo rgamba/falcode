@@ -89,4 +89,23 @@ class ModuleController extends Controller{
 
         $this->load->view("uri_elements.html",get_defined_vars());
     }
+
+    public function errors(){
+        // This authorization system is obviously very insecure, it's only for example purpuse
+        if($_GET['token'] != '123'){
+            // Once the exception is thrown the execution in this controller is stopped
+            // and the ErrorController's access denied function is executed
+            $this->throwAccessDenied("Access denied!"); // No code below this line will be executed
+            // Which is the same as throwing the exception directly
+            //throw new ControllerException("Access denied!",ControllerException::ACCESS_DENIED);
+        }
+
+        echo "Welcome to the secure area!";
+    }
+
+    public function template_layout(){
+        $this->load->template("mobile");
+        $this->load->layout("layout.php"); // Load the PHP-based layout (Not the template engine-based)
+        $this->load->view("template_layout.php");
+    }
 }
