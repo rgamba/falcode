@@ -1,28 +1,4 @@
 <?php
-/*~ install/index.php
-+---------------------------------------------------+
-| Software: BlackMamba          					|
-|  Version: 3.0 									|
-| 	Author: Ricardo Gamba							|
-| Modified: 04/may/10								|
-| ------------------------------------------------- |
-| Instalador del framework, este archivo debe		|
-| ser ejecutado para configurar y crear los MVC		|
-| del sistema de acuerdo de la base de datos 		|
-| especificada. 									|
-|													|
-| NORMALIZACION:									|
-| Para base de datos:								|
-| * Los indices primarios de cada tabla deben de	|
-| 	ser en el formato: 'id_nombre_de_tabla'			|
-| *	Los comentarios del campo seran el nombre		|
-| 	amigable del campo para mostrar.				|
-| * Las FK deben ser creados para que el sistema	|
-| 	realize las relaciones y vistas automáticamente	|
-| * Para que se habilite la funcionalidad de FK,	|
-| 	la base de datos debe estar normalizada.		|
-+---------------------------------------------------+
-*/
 error_reporting(0);
 header("Content-Type:text/html; charset=utf-8"); 
 $op=$_REQUEST['op'];
@@ -35,7 +11,7 @@ require_once("../engine/lib/helpers/array.php");
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 	<meta name="author" content="GALA" />
-	<title>PHPlus -  MVC Setup</title>
+	<title>Falcode Installer</title>
 <script language="javascript">
 checked=false;
 function checkAll () {
@@ -72,16 +48,27 @@ function validarForm(){
 body{
 	font-family: arial, tahoma, sans-serif;
 	font-size: 12px;
-	color: #333333;
-	background: #e6e6e6;
-    background: #e6e6e6 url(bg.gif) repeat-x;
+	color: #444444;
+
 	padding: 0px;
 	margin: 0px;
 }
+h1{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #cccccc;
+}
+h2{
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 15px;
+}
 .wrapper{
-	width: 600px;
-	padding: 15px;
-	border: solid 2px #dddddd;
+	width: 700px;
+	padding: 0px;
+
 	background: #ffffff;
 	margin: 10px auto;
     -moz-border-radius: 15px 15px 15px 15px;
@@ -92,21 +79,24 @@ input[type=text]{
 }
 input[type=submit], input[type=button]{
     border: solid 1px #0d6181;
-    padding: 3px 10px;
+    padding: 5px 10px;
     color: white;
     background-color: #0076a3;
-    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: normal;
+    box-shadow: 0 1px 1px #cccccc;
 }
 </style>
 </head>
 <body>
 <div class="wrapper">
 <div>
-<img src="phplus_logo.gif" />
+<h1>Falcode Installer</h1>
 <?php
 switch($op){
-	default:
-	case '':
+
+	case 'config':
     if($_REQUEST['del']==1){
         unlink("../install/dbsetup.txt");
     }
@@ -130,7 +120,7 @@ switch($op){
 		chmod("../content/templates/default/html",0777);
 		chmod("../content/templates/default/layout.html",0777);
 ?>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">1. Configuración del Sistema</h2>
+<h2>Configuración del Sistema</h2>
 <div>
 <p>Por favor, introduce los datos de tu aplicación y datos de conexión a la base de datos:</p>
 <form action="" method="post" onsubmit="return validarForm();">
@@ -345,7 +335,12 @@ switch($op){
 </div>
 <?php
 		break;
+    default:
+    case '':
 	case 'connect':
+
+    include("../engine/conf/config.php");
+
 
     if(file_exists("../install/dbsetup.txt")){
 	    $dbs=file_get_contents("../install/dbsetup.txt");
@@ -368,49 +363,38 @@ switch($op){
  ***********************************************
  */
 ?>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">2. Creación de Módulos</h2>
+<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">Module, Model and CRUD creation</h2>
 <div>
-<p>Selecciona las tablas para las cuales se creará un módulo:</p>
+<p>A module, model and CRUD will be created for the selected tables:
+</p>
 <div>
 <div style="float: left: height: auto; clear: both; float: left; margin-bottom: 15px">
 <form action="?op=create" method="post" id="tablas">
-<input type="hidden" name="db_host" value="<?php echo $_REQUEST['db_host']?>" />
-<input type="hidden" name="db_user" value="<?php echo $_REQUEST['db_user']?>" />
-<input type="hidden" name="db_pass" value="<?php echo $_REQUEST['db_pass']?>" />
-<input type="hidden" name="db_name" value="<?php echo $_REQUEST['db_name']?>" />
-<input type="hidden" name="subdomain" value="<?php echo $_REQUEST['subdomain']?>" />
+<input type="hidden" name="db_host" value="<?php echo $config['db_host']?>" />
+<input type="hidden" name="db_user" value="<?php echo $config['db_user']?>" />
+<input type="hidden" name="db_pass" value="<?php echo $config['db_pass']?>" />
+<input type="hidden" name="db_name" value="<?php echo $config['db_name']?>" />
+<input type="hidden" name="subdomain" value="<?php echo $config['subdomain']?>" />
 <?php
 if(strpos($_REQUEST['db_engine'],"_")!==false){
     $_REQUEST['db_version']=substr($_REQUEST['db_engine'],-4);
     $_REQUEST['db_engine']=substr($_REQUEST['db_engine'],0,-5);
 }
-$_REQUEST['db_host']=str_replace('\\\\','\\',$_REQUEST['db_host']);
-$engine=$_REQUEST['db_engine'];
+
+$engine=strtolower($config['db_engine']);
 $con=($engine=="mysql")
-    ? mysql_connect($_REQUEST['db_host'],$_REQUEST['db_user'],$_REQUEST['db_pass']) or die("No se pudo conectar a la base de datos con los datos de acceso proporcionados. <br /><br /><input type='button' onclick='history.back()' value='Regresar' />")
-    : mssql_connect($_REQUEST['db_host'],$_REQUEST['db_user'],$_REQUEST['db_pass']) or die("No se pudo conectar a la base de datos con los datos de acceso proporcionados. <br /><br /><input type='button' onclick='history.back()' value='Regresar' />");
+    ? mysql_connect($config['db_host'],$config['db_user'],$config['db_pass']) or die("Couldn't connect to the database. Check the database credentials in engine/conf/config.php")
+    : mssql_connect($config['db_host'],$config['db_user'],$config['db_pass']) or die("Couldn't connect to the database. Check the database credentials in engine/conf/config.php");
     
 if($engine=="mysql")
-    mysql_select_db($_REQUEST['db_name']) or die("No se pudo conectar a la base de datos <b>".$_REQUEST['db_name']."</b>. <br /><br /><input type='button' onclick='history.back()' value='Regresar' />");
+    mysql_select_db($config['db_name']) or die("Couldn't select database. Check \$conf['db_name'] in engine/conf/config.php");
 else
-    mssql_select_db($_REQUEST['db_name'],$con) or die("No se pudo conectar a la base de datos <b>".$_REQUEST['db_name']."</b>. <br /><br /><input type='button' onclick='history.back()' value='Regresar' />");
-$tables=($engine=="mysql") ? mysql_list_tables($_REQUEST['db_name']) : mssql_list_tables($_REQUEST['db_name']);
+    mssql_select_db($config['db_name'],$con) or die("Couldn't select database. Check \$conf['db_name'] in engine/conf/config.php");
+$tables=($engine=="mysql") ? mysql_list_tables($config['db_name']) : mssql_list_tables($config['db_name']);
 if(empty($tables)){
-	echo "La base de datos está vacía. Favor de crear tablas y ejecutar el instalador nuevamente.";
+	echo "The database is empty.";
 }else{
-	$dbconf=fopen("../install/dbsetup.txt","w");
-	$dbcs="db_user=".$_REQUEST['db_user'].",".
-		"db_pass=".$_REQUEST['db_pass'].",".
-		"db_name=".$_REQUEST['db_name'].",".
-        "db_engine=".$_REQUEST['db_engine'].",".
-        "db_host=".$_REQUEST['db_host'].",".
-        "subdomain=".$_REQUEST['subdomain'].",".
-        "db_mode=".$_REQUEST['db_mode'];
-    if(!empty($_REQUEST['db_version']))
-        $dbcs.=",db_version=".$_REQUEST['db_version'];
-		
-	fwrite($dbconf,$dbcs);
-	fclose($dbconf);
+
 	$subdomain=empty($_REQUEST['subdomain']) ? 'default' : $_REQUEST['subdomain'];
 	$config=file_get_contents('../engine/conf/config.php');
 	$config=str_replace('{DB_HOST}',$_REQUEST['db_host'],$config);
@@ -459,13 +443,17 @@ if(empty($tables)){
 }
 ?>
 </div>
+    <div>
+        <input type="button" value="Select/unselect all" style="font-size: 12px" onclick="checkAll()" />
+    </div>
+    <p>If a module, model or CRUD already exist, then nothing will be overwritten.</p>
 <div style="clear: both"></div>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">3. Plugins disponibles</h2>
+<!--<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">3. Plugins disponibles</h2>
 <div style="margin-bottom: 15px; float: left">
 <p>Selecciona los complementos que deseas instalar.</p>
 <div style="padding: 7px; background: #f7f7f7; border: dashed 1px #e6e6e6; border-left: none; border-right: none; clear: both; float: left">
 <?php
-if(is_dir('../plugins')){
+/*if(is_dir('../plugins')){
     if ($dh = opendir('../plugins/')) {
         $cn=0;
         while (($file = readdir($dh)) !== false) {
@@ -488,27 +476,28 @@ if(is_dir('../plugins')){
             echo "No hay complementos disponibles";
         closedir($dh);
     }
-}
+}*/
 
 ?>
 </div>
-</div>
-<div style="clear: both"></div>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">4. Configuraciones extra</h2>
+</div>-->
+    <input type="hidden" name="despachador" value="module_controller" />
+<!--<div style="clear: both"></div>
+<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">4.</h2>
 <div style="clear: both;">
 Tipo de despachador: <select name="despachador">
 <option value="module_controller">Por clase controladora (default)</option>
 <option value="dispatcher">Por archivo despachador</option>
 </select>
-</div>
+</div>-->
 
 <div style="clear: both"></div>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">5. Archivo db.conf</h2>
+<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">Database structure</h2>
 <div style="clear: both;">
 <?php
 $config_file=json_decode(file_get_contents("db.config"),true);
-if($config_file==false){
-    echo "<div style='color: red'>El archivo db.config contiene errores de sintaxis. Debe ser en formato JSON.</div>";
+if($config_file==false && file_exists(db.config)){
+    echo "<div style='color: red'>The structure file db.config contains syntax errors, it must be written in JSON format.</div>";
 }
 if(!empty($config_file)){
     echo "<table cellpadding='2' width='100%'>";
@@ -528,13 +517,13 @@ if(!empty($config_file)){
     echo "</table>";
 }else{
 ?>
-<p>No hay archivo de configuración.
+<p>No database structure file found.
 <?php
 }
 ?>
 
 <br /><br />
-<input type="button" value="<< Regresar" onclick="document.location.href='?del=1'" />&nbsp;<input type="button" value="Seleccionar todas" onclick="checkAll()" />&nbsp;<input type="submit" value="Crear >>" /></div>
+<input type="button" value="Go back" onclick="document.location.href='?del=1'" />&nbsp;<input type="submit" value="Create" style="float: right" /></div>
 </div>
 </form>
 </div>
@@ -542,7 +531,7 @@ if(!empty($config_file)){
 	break;
 	case 'create':
 ?>
-<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">3. Instalación de módulos</h2>
+<h2 style="border-bottom: solid 1px #e6e6e6; padding-bottom: 5px">Module creation</h2>
 <?php
 /**
  ***********************************************
@@ -1454,7 +1443,7 @@ if(!empty($config_file)){
 				fwrite($_htaccess,$htaccess);
 				fclose($_htaccess);
 				
-				?><div>Modelo <b><?php echo $file_name?></b> creado correctamente.</div><?php
+				?><div>Module <b><?php echo $file_name?></b> created.</div><?php
 			}
 			$_layout=fopen("../content/templates/$tpldir/layout.html","w");
             if(!file_exists("../content/templates/$tpldir/layout.html")){
@@ -1465,7 +1454,7 @@ if(!empty($config_file)){
 			$layout=str_replace('{{catalogue}}',$catalogue,$layout);
 			fwrite($_layout,$layout);
 			fclose($_layout);
-			?><div>Template <b>layout.html</b> actualizado.</div><?php
+			?><div>Template <b>layout.html</b> updated.</div><?php
 		}
 
         // -----------------------------------
@@ -1573,17 +1562,39 @@ if(!empty($config_file)){
                 }
             }
         }
+
+        // Create the tables
+        include("../engine/lib/helpers/sql_parse.php");
+        include("../engine/conf/config.php");
+        mysql_connect($config['db_host'],$config['db_user'],$config['db_pass']) or die('Couldn\'t connecto to MySQL with the specified data');
+        mysql_select_db($config['db_name']);
+        $chk = mysql_query("SHOW TABLES LIKE 'user_role'");
+        if(mysql_num_rows($chk) <= 0){
+
+            $res = execute_sql_file("schema.sql",$config['db_host'],$config['db_user'],$config['db_pass'],$config['db_name']);
+            if($res === true){
+                echo '<div>The database schema has been created.</div>';
+            }else{
+                echo '<div style="color: red">The following error was thrown while attempting to create the database schema:<br>
+                '.$res.'
+                </div>';
+            }
+        }else{
+            echo '<div>The database schema has already been created.</div>';
+        }
 ?>
 <br /><br />
-<div><b>Instalación completada.</b></div>
-<div>Raiz de la aplicación: <a href="<?php echo str_replace('install/?op=connect','',$_SERVER['HTTP_REFERER'])?>">
+<div><b>Installation complete.</b></div>
+<div>Your application root: <a href="<?php echo str_replace('install/?op=connect','',$_SERVER['HTTP_REFERER'])?>">
 <?php echo str_replace('install/?op=connect','',$_SERVER['HTTP_REFERER'])?>
 </a></div>
 <?php
 	break;
 }
 ?>
-</div></div>
-<div style="text-align: center; color: #999999; margin: 10px; 0px">PHPlus Framework &copy; 2.2.0  | </div>
+</div>
+<div style="text-align: center; color: #999999; border-top: solid 1px #cccccc; padding-top: 15px; margin-top: 10px">Falcode &copy; 2.2.0  | </div>
+
+</div>
 </body>
 </html>

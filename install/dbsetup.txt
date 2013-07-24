@@ -1,1 +1,0 @@
-db_user=tdi,db_pass=t0rneoid34s_2010!,db_name=tdi_dev,db_engine=mysql,db_host=torneodeideas.com,subdomain=default,db_mode=simple
