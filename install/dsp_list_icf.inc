@@ -23,7 +23,7 @@ if(!empty($this->request->ord))
 // Joins
 {joins}
 // Fields
-${class_name}->select({fk_fields});
+${class_name}->select("{fk_fields}");
 // Execute query
 ${class_name}->execute(false);
 

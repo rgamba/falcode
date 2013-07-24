@@ -538,30 +538,29 @@ if(!empty($config_file)){
  * CREAMOS ARCHIVOS NECESARIOS
  ***********************************************
  */
-        $dbs=file_get_contents("../install/dbsetup.txt");
-        $dbs=explode(",",nl2br($dbs));
-        foreach($dbs as $line){
-            $line=explode("=",$line);
-            $dbsetup[$line[0]]=$line[1];
-        }
-        $engine=$dbsetup['db_engine'];
+        include_once("../engine/conf/config.php");
+        $conf = $config;
+        $conf['db_engine'] = strtolower($conf['db_engine']);
+        $conf['db_mode'] = "simple";
+        $engine=$conf['db_engine'];
 		if(!empty($_POST['tabla'])){
 			if(file_exists("db.config")){
 				$config=json_decode(file_get_contents("db.config"));
 				$config=get_object_vars($config);
 			}
 			$con=($engine=="mysql")
-                ? mysql_connect($dbsetup['db_host'],$dbsetup['db_user'],$dbsetup['db_pass'])
-                : mssql_connect($dbsetup['db_host'],$dbsetup['db_user'],$dbsetup['db_pass']);
+                ? mysql_connect($conf['db_host'],$conf['db_user'],$conf['db_pass'])
+                : mssql_connect($conf['db_host'],$conf['db_user'],$conf['db_pass']);
             if($engine=="mysql"){
-			    $info_schema=mysql_connect($dbsetup['db_host'],$dbsetup['db_user'],$dbsetup['db_pass']);
-			    mysql_select_db($dbsetup['db_name'],$con);
+			    $info_schema=mysql_connect($conf['db_host'],$conf['db_user'],$conf['db_pass']);
+			    mysql_select_db($conf['db_name'],$con);
 			    mysql_select_db('information_schema',$info_schema);
             }else{
-                mssql_select_db($dbsetup['db_name']);
+                mssql_select_db($conf['db_name']);
             }
-            $subdomain=empty($dbsetup['subdomain']) ? 'default' : $dbsetup['subdomain'];
-            $suffix=$_REQUEST['despachador']=='module_controller' ? '_icf' : '';
+            $subdomain=empty($conf['subdomain']) ? 'default' : $conf['subdomain'];
+
+            $suffix= '_icf';
 			// Modelo del sistema
 			$file=file_get_contents("model.inc");
 			// Despachador
@@ -596,15 +595,16 @@ if(!empty($config_file)){
 				$cols=array();
 				$_cols=array();
                 if($engine=="mysql"){
-				    $result = mysql_query("SHOW COLUMNS FROM ".$_REQUEST['db_name'].".$table",$con) or die(mysql_error());
+				    $result = mysql_query("SHOW COLUMNS FROM ".$conf['db_name'].".$table",$con) or die(mysql_error());
 				    if (@mysql_num_rows($result) > 0) {
 				        while ($col = mysql_fetch_assoc($result)) {
 				            $cols[]=$col['Field'];
 				            $_cols[]=$col;
 				        }
 				    }
+
                 }else{
-                    $result=mssql_query("SELECT COLUMN_NAME FROM ".$dbsetup['db_name'].".INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$table'");
+                    $result=mssql_query("SELECT COLUMN_NAME FROM ".$conf['db_name'].".INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '$table'");
                     if (@mssql_num_rows($result) > 0) {
                         while ($col = mssql_fetch_assoc($result)) {
                             $cols[]=$col['COLUMN_NAME'];
@@ -619,7 +619,7 @@ if(!empty($config_file)){
                     $p_query=mysql_query("
                         SELECT COLUMN_NAME 
                         FROM KEY_COLUMN_USAGE 
-                        WHERE CONSTRAINT_SCHEMA = '".$dbsetup['db_name']."'
+                        WHERE CONSTRAINT_SCHEMA = '".$conf['db_name']."'
                         AND TABLE_NAME = '$table' AND CONSTRAINT_NAME = 'PRIMARY'
                     ");
                     if(mysql_num_rows($p_query)>0){
@@ -658,7 +658,7 @@ if(!empty($config_file)){
                 }else{
                     // MS SQL Server... HVA!
                     $dbname=$dbsetup['db_name'];
-                    if($dbsetup['db_version']=='2005'){
+                    if($conf['db_version']=='2005'){
                         // Version 2005
                         $comm_qry=mssql_query("
                             SELECT
@@ -676,7 +676,7 @@ if(!empty($config_file)){
                             WHERE
                                 OBJECT_NAME(c.object_id) = '$table'                      
                         ")or die(mssql_get_last_message());
-                    }elseif($dbsetup['db_version']=='2000'){
+                    }elseif($conf['db_version']=='2000'){
                         // Version 2000
                         $comm_qry=mssql_query("
                             SELECT 
@@ -743,7 +743,7 @@ if(!empty($config_file)){
                     }
                 }else{
                     // SQL Server
-                    if($dbsetup['db_version']=='2005'){
+                    if($conf['db_version']=='2005'){
                         // Version 2005
                         $keys_qry=@mssql_query("
                             SELECT C.TABLE_CATALOG [PKTABLE_QUALIFIER],
@@ -778,7 +778,7 @@ if(!empty($config_file)){
                             AND
                                 C.TABLE_NAME = '$table'
                         ");
-                    }elseif($dbsetup['db_version']=='2000'){
+                    }elseif($conf['db_version']=='2000'){
                         // Version 2000
                         $keys_qry=@mssql_query("
                             SELECT 
@@ -851,7 +851,7 @@ if(!empty($config_file)){
                 $fk_model=implode(', ',$fk_model);
                 $_file=str_replace("{fk_model}",$fk_model,$_file);
 				$_file=str_replace("{table}",$table,$_file);
-                $_file=str_replace("{multi_db}",($dbsetup['db_mode']=="simple" ? '' : '$this->Db->useDb(\''.$dbsetup['db_name'].'\');'."\n"),$_file);
+                $_file=str_replace("{multi_db}",($conf['db_mode']=="simple" ? '' : '$this->Db->useDb(\''.$dbsetup['db_name'].'\');'."\n"),$_file);
                 $_file=str_replace("{pk}",$PK,$_file);
 				$_file=str_replace("{class_name}",$file_name,$_file);
 				$_file=str_replace("{file_name}",$file_name,$_file);
@@ -870,7 +870,8 @@ if(!empty($config_file)){
                 }
                 
 				// Creamos directorio en controller
-				mkdir("../controller/$subdomain/$table");
+				mkdir("../controller/$subdomain/$table") or die("Unable to create dir: ../controller/$subdomain/$table. Make sure the parent directory is writeable");
+
                 // --------------------------------------------------------------
 				// Creamos Despachador [ModuleController | _dispatcher].php
                 // --------------------------------------------------------------
@@ -965,7 +966,7 @@ if(!empty($config_file)){
                         $img_code_m.="\t"."// Main table primary key field name\n";
                         $img_code_m.="\t"."'main_table_pk' => '".$PK."',\n";
                         $img_code_m.="\t"."// Image table primary key field name\n";
-                        $img_code_m.="\t"."'image_table_pk' => '".table_primary_key($config[$table]->image->table,$dbsetup['db_name'])."',\n";
+                        $img_code_m.="\t"."'image_table_pk' => '".table_primary_key($config[$table]->image->table,$conf['db_name'])."',\n";
                         $img_code_m.="\t"."// Main table image field name (in case of single image only)\n";
                         $img_code_m.="\t"."'main_table_img_field' => '',\n";
                         $img_code_m.="\t"."// Image table image field name (in case of multiple images only)\n";
@@ -1159,8 +1160,9 @@ if(!empty($config_file)){
 				$_tpllist=$tpl_list;
 				$_tpllist=str_replace("{table}",$table,$_tpllist);
 				$tpllist=fopen("../content/templates/$tpldir/html/$table/dsp_list.html","x");
-				$fields='<td><input type="checkbox" name="'.$PK.'[]" value="{$'.$PK.'}" /></td>';
+				$fields='';//'<td><input type="checkbox" name="'.$PK.'[]" value="{$'.$PK.'}" /></td>';
 				$headers='';
+                $filter_fields = '';
 				$opt=array();
 				foreach($cols as $i => $col){
 					$col_header=!empty($comments[$col]) ? $comments[$col] : $col; 
@@ -1176,6 +1178,7 @@ if(!empty($config_file)){
 					// Verificamos que el campo no este escondido y si se pueda mostrar
 					if($opt['hidden']!="list" && $opt['hidden']!="true"){
 						$headers.='<td><a href="{$col_order.UrlOrd'.$i.'}" class="{$col_order.ClassOrd'.$i.'}">'.$col_header.'</a></td>'."\n";
+						$filter_fields .= '<td><input type="text" name="'. $col .'" value="{$system.request.'.$col.'}" /></td>';
 						// Checamos si el campo es una foreign key, si es
 						// verificamos si quiere que mostremos un campo diferente
 						// al id de la table (tabla.campo) para evitar conflictos de nombre
@@ -1185,9 +1188,10 @@ if(!empty($config_file)){
 					}
 				}
 				$headers.='<td class="options-tab" style="text-align: right">Opciones</td>';
-				$fields.='<td class="options-tab" style="text-align: right"><a href="{url:'.$table.'/view?id=$row.'.$PK.'}">Ver</a>&nbsp;|&nbsp;<a href="{url:'.$table.'/edit?id=$row.'.$PK.'}">Editar</a>&nbsp;|&nbsp;<a href="{url:'.$table.'/del?id=$row.'.$PK.'}" onclick="return confirm(\'¿Eliminar registro?\');">Eliminar</a></td>';
+				$fields.='<td class="options-tab" style="text-align: right"><a style="margin-right: 7px" href="{url:'.$table.'/view?id=$row.'.$PK.'}"><img src="{$system.path(img)}view.png" style="border: none;" /></a><a href="{url:'.$table.'/edit?id=$row.'.$PK.'}" style="margin-right: 7px"><img src="{$system.path(img)}edit.png" style="border: none;" /></a><a href="{url:'.$table.'/del?id=$row.'.$PK.'}" onclick="return confirm(\'Delete row?\');"><img src="{$system.path(img)}delete.png" style="border: none;" /></a></td>';
 				$_tpllist=str_replace("{headers}",$headers,$_tpllist);
 				$_tpllist=str_replace("{campos}",$fields,$_tpllist);
+				$_tpllist=str_replace("{filter_fields}",$filter_fields,$_tpllist);
 				//fwrite($tpllist, pack("CCC",0xef,0xbb,0xbf));
 				fwrite($tpllist,$_tpllist);
 				fclose($tpllist);
@@ -1385,7 +1389,7 @@ if(!empty($config_file)){
                         $fields_img.='<div id="img_cont">'."\n";
                         $fields_img.='{if:$images}'."\n";
                         $fields_img.='{loop:$images,item=img,key=j}'."\n";
-                        $fields_img.='<div class="img-cont"><img src="{url:image?src=$img.imagen&width=150&folder='.$table.'}" /><a class="del_img" href="{url:image/delete?main_table='.$table.'&image_table='.$config[$table]->image->table.'&main_table_pk='.$PK.'&image_table_pk='.table_primary_key($config[$table]->image->table,$dbsetup['db_name']).'&image_field='.$config[$table]->image->field.'&id=$img.'.table_primary_key($config[$table]->image->table,$dbsetup['db_name']).'&fwd_module='.$table.'&fwd_action=edit&fwd_id=$row.'.$PK.'}">{$system.lang.delete}</a></div>'."\n";
+                        $fields_img.='<div class="img-cont"><img src="{url:image?src=$img.imagen&width=150&folder='.$table.'}" /><a class="del_img" href="{url:image/delete?main_table='.$table.'&image_table='.$config[$table]->image->table.'&main_table_pk='.$PK.'&image_table_pk='.table_primary_key($config[$table]->image->table,$conf['db_name']).'&image_field='.$config[$table]->image->field.'&id=$img.'.table_primary_key($config[$table]->image->table,$conf['db_name']).'&fwd_module='.$table.'&fwd_action=edit&fwd_id=$row.'.$PK.'}">{$system.lang.delete}</a></div>'."\n";
                         $fields_img.='{/loop}'."\n";
                         $fields_img.='{/if}'."\n";
                         $fields_img.='</div>'."\n";
@@ -1511,7 +1515,7 @@ if(!empty($config_file)){
                                 if($fb[0]=='setup'){
                                     switch($fb[1]){
                                         case 'db.sql': // SQL
-                                            $query=($dbsetup['db_engine']=='mysql') ? mysql_query($buf) : mssql_query($buf);
+                                            $query=($conf['db_engine']=='mysql') ? mysql_query($buf) : mssql_query($buf);
                                             if($query)
                                                 echo "<br />>> Sentencia SQL ejecutada correctamente.";
                                             else
@@ -1565,7 +1569,7 @@ if(!empty($config_file)){
 
         // Create the tables
         include("../engine/lib/helpers/sql_parse.php");
-        include("../engine/conf/config.php");
+        include_once("../engine/conf/config.php");
         mysql_connect($config['db_host'],$config['db_user'],$config['db_pass']) or die('Couldn\'t connecto to MySQL with the specified data');
         mysql_select_db($config['db_name']);
         $chk = mysql_query("SHOW TABLES LIKE 'user_role'");

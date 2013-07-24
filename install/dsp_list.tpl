@@ -1,8 +1,5 @@
 {if:!$system.const.DSP_BLANK}
-<div class="left"></div>
-<div class="right"></div>
-<div class="heading">
-<h1 style="background-image: url('{$system.path(img)}log.png');">{table}</h1>
+<h1>{table}</h1>
 <div class="buttons">
 <div style="float: left">
     <form action="{url:{table}/list}" method="post" id="search_form">
@@ -13,21 +10,23 @@
     </form>
     </div>
     <a class="button" href="{url:{table}/add}"><span>{$system.lang.create}</span></a>
-    <a class="button" href="#" onclick="if(confirm('{$system.lang.confirm_delete}')){document.getElementById('list_form').submit();}"><span>Eliminar</span></a>
-    </div>
 </div>
+
 
 <div class="content">
 {/if}
 {if:$recordset}
-<form action="{url:{table}/del}" method="post" id="list_form">
+<form action="{url:{table}/list}" method="post" id="list_form">
 <table style="clear: both" class="list">
 <thead>
 	<tr>
-        <td style="width: 20px"><input type="checkbox" class="checkall" /></td>
 		{headers}
 	</tr>
 </thead>
+<tr class="filter">
+    {filter_fields}
+    <td><input type="submit" class="button" value="Filter" /></td>
+</tr>
 <tbody>
 	{loop:$recordset,key=i,item=row}
 	<tr style="background: {$bg_color}">

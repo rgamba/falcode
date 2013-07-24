@@ -1,4 +1,14 @@
-/* Validation errors */
+/* Validation errors and notifications */
+.sys-info{
+    background: #007E0A;
+    padding: 7px 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px #cccccc;
+}
 input.error,select.error,textarea.error{
     border: solid 1px red;
 }
@@ -10,4 +20,87 @@ input.error,select.error,textarea.error{
 span.error-msg{
     color: red;
     display: block;
+}
+/* Styles for CRUD modules */
+a.button,input[type=submit].button,input[type=button].button{
+    padding: 5px 8px;
+    display: inline-block;
+    background: #4387F5;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px #cccccc;
+    text-decoration: none;
+    border: none;
+}
+div.buttons{
+    margin-bottom: 10px;
+}
+table.list{
+    width: 100%;
+    table-layout: fixed;
+}
+table.list td:last-child{
+    width: 100px;
+}
+table.list tr.filter td{
+    padding: 5px 0;
+    border-bottom: solid 1px #e6e6e6;
+    background: white;
+}
+table.list tr.filter td input[type=text],table.list tr.filter td select{
+    width: 95%;
+    padding: 3px 0;
+    border: solid 1px #ccc;
+}
+table.list tr.filter td:last-child{
+    text-align: right;
+}
+table.list tr:nth-child(odd) {
+    background: #f1f1f1;
+}
+table.list thead td{
+    border-bottom: solid 1px #cccccc;
+    box-shadow: 0 1px 1px #e6e6e6;
+    padding: 7px;
+}
+table.list thead td a{
+    color: #444444;
+    text-decoration: none;
+}
+table.form td:first-child{
+    background: #e6e6e6;
+    padding-right: 15px;
+    text-align: right;
+}
+table.form input[type=text],table.form input[type=password]{
+    width: 300px;
+}
+table.form textarea{
+    width: 400px;
+    height: 100px;
+}
+span.help{
+    font-size: 11px;
+    display: block;
+    color: #808080;
+}
+a.asc{
+    padding-left: 15px;
+    background: transparent url(../images/asc.png) no-repeat left center;
+}
+a.desc{
+    padding-left: 15px;
+    background: transparent url(../images/desc.png) no-repeat left center;
+}
+.pagination{
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: solid 1px #cccccc;
+    color: #444444;
+}
+div.information{
+    padding: 10px;
+    font-size: 14px;
+    color: #808080;
+    text-shadow: 0 1px 0 white;
 }

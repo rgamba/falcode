@@ -1,11 +1,11 @@
-<div class="pagination" style="margin: 5px 0px;">
+<div class="pagination">
 <div style="float: right;">
-Mostrando del <b>{$DesdeReg}</b> al <b>{$HastaReg}</b> de un total de <b>{$TotalReg}</b>
+Showing records <b>{$DesdeReg}</b> to <b>{$HastaReg}</b> from a total of <b>{$TotalReg}</b>
 </div>
-<div class="links" style="font-size: 14px;">
+<div class="links">
     {if:$Prev}
-        <a title="Primera" href="{$FirstPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><<</a>
-        <a title="Anterior" href="{$PrevPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><</a>
+        <a title="First" href="{$FirstPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><<</a>
+        <a title="Previous" href="{$PrevPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" ><</a>
     {/if}
     {loop:$paginator,item=item}
         {if:$item.current}
@@ -15,8 +15,8 @@ Mostrando del <b>{$DesdeReg}</b> al <b>{$HastaReg}</b> de un total de <b>{$Total
         {/if}
     {/loop}
     {if:$Next}
-        <a title="Siguiente" href="{$NextPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >></a>
-        <a title="Última" href="{$LastPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >>></a>
+        <a title="Next" href="{$NextPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >></a>
+        <a title="Last" href="{$LastPg}" rel="{$rel}" tar="{$tar}" callback="{$callback}" >>></a>
     {/if}
 </div>
 </div>
