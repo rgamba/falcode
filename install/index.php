@@ -369,6 +369,18 @@ switch($op){
 </p>
 <div>
 <div style="float: left: height: auto; clear: both; float: left; margin-bottom: 15px">
+
+    <?php
+    if(substr(sprintf('%o', fileperms('../controller/default')), -3)<666)
+        echo '<div style="color: red">The directory <b>controller/default/</b> must be writeable</div>';
+
+    if(substr(sprintf('%o', fileperms('../engine/model')), -3)<666)
+        echo '<div style="color: red">The directory <b>engine/model/</b> must be writeable</div>';
+
+    if(substr(sprintf('%o', fileperms('../content/templates/default/html')), -3)<666)
+        echo '<div style="color: red">The directory <b>content/templates/default/html</b> must be writeable</div>';
+    ?>
+
 <form action="?op=create" method="post" id="tablas">
 <input type="hidden" name="db_host" value="<?php echo $config['db_host']?>" />
 <input type="hidden" name="db_user" value="<?php echo $config['db_user']?>" />
