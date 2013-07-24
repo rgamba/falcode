@@ -870,7 +870,7 @@ if(!empty($config_file)){
                 }
                 
 				// Creamos directorio en controller
-				mkdir("../controller/$subdomain/$table") or die("Unable to create dir: ../controller/$subdomain/$table. Make sure the parent directory is writeable");
+				mkdir("../controller/$subdomain/$table");// or die("Unable to create dir: ../controller/$subdomain/$table. Make sure the parent directory is writeable");
 
                 // --------------------------------------------------------------
 				// Creamos Despachador [ModuleController | _dispatcher].php
