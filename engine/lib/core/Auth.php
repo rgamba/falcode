@@ -39,13 +39,13 @@ class Auth{
                 }
             }
         }
-        
+
         if(ThisUser::islogged())
             return true;
         
         if(empty($post))
             return false;
-        
+
         if(ThisUser::getAttempts()>=Sys::get('config')->login_attempts){
             self::throwException(Sys::get('config')->login_max_tries);
             return false;
@@ -54,15 +54,18 @@ class Auth{
         if(Sys::get('config')->login_encode_pass==true){
             $post[Sys::get('config')->user_password_field]=sha1($post[Sys::get('config')->user_password_field]);     
         }
+
         $query=Sys::get('config')->user_login_query;
         $query=str_replace(array('{0}','{1}'),array($post[Sys::get('config')->user_username_field],$post[Sys::get('config')->user_password_field]),$query);
-        $pass=@Sys::$Db->query($query);
+
+        $pass=@Sys::get('db')->query($query);
+
         if(@Sys::$Db->numRows()<=0){
             ThisUser::addTry();
             self::throwException(Sys::get('config')->login_error_msg);
             return false;
         }
-        
+
         if(self::SES_REGISTER_TABLE_FIELDS==1)
             self::registerVars($pass);
         ThisUser::clearAttempts();

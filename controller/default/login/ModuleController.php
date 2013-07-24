@@ -22,28 +22,23 @@ class ModuleController extends Controller{
     public function check(){
         $this->blank(true);
         // Validation rules
-        $this->request->post("usuario",true)->required()->errorMsg("Ingresa tu correo");
-        $this->request->post("pass",true)->required()->errorMsg("Ingresa tu contraseña");
+        $this->request->post("username",true)->required()->errorMsg("Enter your username");
+        $this->request->post("pass",true)->required()->errorMsg("Enter your password");
         $this->request->validate();
 
         try{
             if(Auth::attemptLogin($_POST)){
                 $db = Db::getInstance();
-                $id_pais = $db->fetch("SELECT id_pais FROM pais WHERE iso2 = '".$db->escape($_SESSION['pais'])."'");
-                $db->query("UPDATE usuario SET id_pais = '".$id_pais->row['id_pais']."' WHERE id_usuario = '".User::get("id_usuario")."'");
 
                 $this->updateTimezone();
                 if($this->request->isAjax()){
                     $this->response->isJSON();
                     echo json_encode(array(
                         'result' => 'ok',
-                        'redirect' => (!empty($_POST['id_torneo']) ? url("desafio/view?id=".$_POST['id_torneo']) : $_SERVER['HTTP_REFERER'])
+                        'redirect' => $_SERVER['HTTP_REFERER']
                     ));
                 }else{
-                    if(!empty($_POST['id_torneo']))
-                        redirect(url("desafio/view?id=".$_POST['id_torneo']));
-                    else
-                        redirect(url('panel'));
+                    redirect(url('index'));
                 }
             }
         }catch(Exception $e){

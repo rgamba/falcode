@@ -20,7 +20,7 @@ $config['cron_token'] = "cronsecure"; // <- CHANGE THIS
 $config['base_currency'] = "USD"; 
 $config['session_save_on_db'] = false;
 $config['session_expire'] = 86000;
-$config['session_name'] = "falcode";
+$config['session_name'] = "falcode"; // Just alphanumeric characters!
 $config['session_domain'] = ".falcode.org";
 // Database
 $config['db_host'] = "localhost";
@@ -29,7 +29,7 @@ $config['db_pass'] = ""; // <- CHANGE THIS
 $config['db_name'] = "falcode"; // <- CHANGE THIS
 $config['db_engine'] = "MySQL";
 $config['db_auto_connect'] = false;
-$config['db_show_errors'] = true;
+$config['db_show_errors'] = false;
 // Templates & views
 $config['tpl_default'] = "default";
 $config['tpl_blank'] = "_blank.html";
@@ -51,26 +51,26 @@ $config['ctrl_controller_file'] = "ModuleController.php";
 $config['lang_default'] = "en";
 // Login
 $config['login_encode_pass'] = false;
-$config['login_required'] = false;
+$config['login_required'] = false; // db_auto_connect MUST be set to true in order for this to work!
 $config['login_set_cookie'] = true;
 $config['login_cookie_expire_days'] = 30;
 $config['login_error_msg'] = "Incorrect login credentials";
 $config['login_max_tries'] = "Maximum login attempts reached";
 $config['login_attempts'] = 100;
 // User system
-$config['user_table'] = "usuario";
-$config['user_username_field'] = "usuario";
+$config['user_table'] = "user";
+$config['user_username_field'] = "username";
 $config['user_password_field'] = "pass";
 $config['user_lvl_field'] = "rol";
-$config['user_login_query'] = "SELECT u.*,ur.nombre as rol FROM usuario u INNER JOIN usuario_rol ur USING(id_usuario_rol) WHERE usuario = '{0}' AND pass = '{1}'";
+$config['user_login_query'] = "SELECT u.*,ur.name as rol FROM user u INNER JOIN user_role ur USING(id_user_role) WHERE username = '{0}' AND pass = '{1}'";
 // PayPal API
-/*
+/* Uncomment if needed
 $config['paypal_user'] = "";
 $config['paypal_pwd'] = "";
 $config['paypal_signature'] = "";
 */
 // Facebook API
-/*
+/* Uncomment if needed
 $config['fb_app_id'] = "";
 $config['fb_secret'] = "";
 */

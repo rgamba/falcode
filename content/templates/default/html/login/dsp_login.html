@@ -1,40 +1,37 @@
-<div class="box" style="width: 470px; min-height: 100px; margin-top: 40px; margin-left: auto; margin-right: auto; margin-bottom: 40px; background-color: transparent; border:0px;">
+<div class="box" style="width: 270px; min-height: 100px; margin-top: 40px; margin-left: auto; margin-right: auto; margin-bottom: 40px; background-color: transparent; border:0px;">
   <div class="heading">
-    <h1>Iniciar Sesión</h1>
+    <h1>Login</h1>
 
   </div>
-  <div class="content" style="min-height: 150px; border-top: none; padding: 10px">
+  <div class="content" style="min-height: 150px; border-top: none; padding: 10px; background: #e6e6e6">
         <form action="{url:login/check}" method="post" enctype="multipart/form-data" id="form">
         <input type="hidden" name="context" value=".content" />
-        <input type="hidden" name="id_torneo" value="{$system.request.id_torneo}" />
+
       <table style="width: 100%;">
         <tr>
-          <td style="text-align: center;"><img src="{$system.path(img)}lock2.png" alt="Por favor ingrese sus datos." /></td>
           <td style="font-size: 14px; vertical-align: top;">
-              <div style="font-size: 12px; margin-bottom: 10px">
-                  Si aún no estás registrado. <a href="{url:registro}">Regístrate ahora completamente gratis.</a>
-              </div>
-            <div>E-mail</div>
-            <input type="text" name="usuario" value="" style="margin-top: 4px; width: 200px" />
 
-            <div style="margin-top: 12px">Contraseña <a href="{url:login/lost_password}" style="margin-left: 10px; font-size: 12px;">¿La olvidaste?</a></div>
+            <div>E-mail</div>
+            <input type="text" name="username" value="" style="margin-top: 4px; width: 200px" />
+
+            <div style="margin-top: 12px">Password <a href="{url:login/lost_password}" style="margin-left: 10px; font-size: 12px;">Forgot it?</a></div>
             <input type="password" name="pass" id="passwd" value="" style="margin-top: 4px; width: 200px" class="submit_on_enter" />
-            <label style="display: block; margin-top: 5px"><input type="checkbox" name="set_cookie" value="1" checked="checked" /> No cerrar sesión</label>
+            <label style="display: block; margin-top: 5px"><input type="checkbox" name="set_cookie" value="1" checked="checked" /> Remember me</label>
 
           </td>
         </tr>
         <tr>
           <td colspan="2" style="padding-top: 10px">
-              <a href="#" onclick="$('#form').submit();" class="boton-ir" style="margin-left: 10px; margin-top: 10px; float: left; min-width: 0px; width: 134px;">Iniciar sesion</a>
-                <span style="float: left; margin-left: 10px;margin-top: 15px; font-size: 16px">o</span>
-              <a href="{$system.fb.login_url}" class="fb_button" style="float: left; margin-top: 11px; margin-left: 10px">Entrar con Facebook</a>
+              <input type="submit" onclick="$('#form').submit();" value="Login"  style="margin-left: 10px; margin-top: 10px; float: left;  " />
+                <span style="float: left; margin-left: 10px;margin-top: 15px; font-size: 16px">or</span>
+
+                <a href="{$system.fb.login_url}" style="float: left; margin-top: 11px; margin-left: 10px">Login with Facebook</a>
 
              
 
           </td>
         </tr>
       </table>
-      <input type="submit" style="display: none" />
     </form>
   </div>
 

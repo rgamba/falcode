@@ -59,7 +59,6 @@ Sys::set('page_load_init',microtime(true));
  * Database unique handle connection
  */
 if(Sys::get('config')->db_auto_connect){
-    die();
     Db::connect();
     Sys::$Db = Db::getInstance();
     Sys::set('db',Sys::$Db);

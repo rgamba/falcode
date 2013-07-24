@@ -42,17 +42,11 @@ class Acl extends AccessControl{
             $psql[].="ur.id_user_role = '$pid'";
         $psql[]="u.id_user_role IS NULL";
         //$Up=new UsuarioPermiso;
-        $Up = $Db->fetch("SELECT u.*,ur.nombre as nombre_rol FROM user_permission u LEFT JOIN user_role ur USING(id_user_role) WHERE ur.name = '".$this->getRole()."' OR ".implode(' OR ',$psql)." ORDER BY u.id_user_role, u.module,u.action");
+        $Up = $Db->fetch("SELECT u.*,ur.name as nombre_rol FROM user_permission u LEFT JOIN user_role ur USING(id_user_role) WHERE ur.name = '".$this->getRole()."' OR ".implode(' OR ',$psql)." ORDER BY u.id_user_role, u.module,u.action");
         // Obtenemos unicamente los permisos del rol actual
         // o de roles padres para establecer el arbol
         // Los permisos se ordenan por ROL > MODULO > ACCION
-        /*$Up->select(
-            NULL,
-            "WHERE ur.nombre = '".$this->getRole()."' OR ".implode(' OR ',$psql).
-            " ORDER BY u.id_user_rol, u.modulo,u.accion",
-            "LEFT JOIN usuario_rol ur USING(id_user_rol)",
-            "u.*,ur.nombre as nombre_rol"
-        );*/
+
         if($Up->num_rows>0){
             foreach($Up->rows as $up){
             //while($Up->next()){
