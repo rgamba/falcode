@@ -1,11 +1,11 @@
-FALCODE
-=============
-Falcode is a PHP web development framework based on Apache, MySQL, PHP and Javascript.
+What is FALCODE?
+
+Falcode is a web development framework based on PHP, MySQL and Javascript.
+It uses the MVC programming architecture and it's main goal is to run structured, maintainable and highly scalable
+web applications.
 
 REQUIREMENTS:
-- Apache with mod_rewrite enabled
-- PHP >= 5
-- MySQL or MsSQL Server
+- PHP 5.2 or newer
 
 INSTALATION:
 1. Just copy and paste all the files contained in a HTTP accessible directory.
