@@ -198,6 +198,11 @@ class Router{
                 }
             }
             unset($_GET[self::ROUTE_VAR],$_REQUEST[self::ROUTE_VAR]);
+        }else{
+            if(!empty($_REQUEST['_path']) && is_array($_REQUEST['_path'])){
+                $_GET['_path_']=$_REQUEST['_path'];
+                self::$path=$_REQUEST['_path'];
+            }
         }
     }
 

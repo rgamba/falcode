@@ -45,7 +45,7 @@ $config['mail_pass'] = ""; // <- CHANGE THIS
 $config['mail_from'] = 'noreply@yourapp.com'; // <- CHANGE THIS
 // Controller
 $config['ctrl_default_module'] = "index";
-$config['ctrl_enable_mod_rewrite'] = true;
+$config['ctrl_enable_mod_rewrite'] = false;
 $config['ctrl_controller_file'] = "ModuleController.php";
 // Lang
 $config['lang_default'] = "en";

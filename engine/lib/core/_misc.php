@@ -216,6 +216,8 @@ function url($url='',$subdomain=NULL,$port=NULL){
 		$replace.="?".Router::CONTROL_VAR."=".$link['ctrl'][0];
 		$replace.=(!empty($link['ctrl'][1]) ? Router::CONTROL_SEP.$link['ctrl'][1] : '')."&".http_build_query($link['get']);
 	}
+    if(substr($replace,-1,1) == "&")
+        $replace = substr($replace,0,-1);
 	return $replace;
 }
 

@@ -1,12 +1,19 @@
 <h1>Images example</h1>
-<p>This example uses the test image inside content/_files/images/test/falcon.jpg as if it was uploaded by a user</p>
+<p>This example uses the test image inside content/_files/images/test/falcon.jpg as if it was uploaded by a user<br>
+Two methods of calling the image module are presented for each image, the first one is commented as it requires $config['ctrl_enable_mod_rewrite'] = true and therefore the mod_rewrite needs to be activated in apache. The commented method is the preferred one
+</p>
 <h2>Original image:</h2>
-<img src="{url:image?_path=test}falcon.jpg" />
+<!-- <img src="{url:image?_path=test}falcon.jpg" /> -->
+<img src="{url:image?folder=test&src=falcon.jpg}" />
 <h2>Resize to 200px width</h2>
-<img src="{url:image?_path=test&_path=200xauto}falcon.jpg" />
+<!-- <img src="{url:image?_path=test&_path=200xauto}falcon.jpg" /> -->
+<img src="{url:image?folder=test&src=falcon.jpg&width=200}" />
 <h2>Resize to 200px height</h2>
-<img src="{url:image?_path=test&_path=autox200}falcon.jpg" />
+<!-- <img src="{url:image?_path=test&_path=autox200}falcon.jpg" /> -->
+<img src="{url:image?folder=test&height=200&src=falcon.jpg}" />
 <h2>Crop to 200x200</h2>
-<img src="{url:image?_path=test&_path=200x200}falcon.jpg" />
+<!-- <img src="{url:image?_path=test&_path=200x200}falcon.jpg" /> -->
+<img src="{url:image?folder=test&width=200&height=200&force=1&position=outside&src=falcon.jpg}" />
 <h2>Crop to 200x200 without losing any image section</h2>
-<img src="{url:image?_path=test&_path=200x200&_path=inside}falcon.jpg" />
+<!-- <img src="{url:image?_path=test&_path=200x200&_path=inside}falcon.jpg" /> -->
+<img src="{url:image?folder=test&width=200&height=200&force=1&position=inside&src=falcon.jpg}" />

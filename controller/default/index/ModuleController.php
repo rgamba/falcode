@@ -11,6 +11,6 @@ class ModuleController extends Controller{
     }
     
     public function main(){
-        $this->load->view("test.php",get_defined_vars());
+        $this->load->view("index.php",get_defined_vars());
     }
 }
