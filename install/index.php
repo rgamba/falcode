@@ -1199,7 +1199,7 @@ if(!empty($config_file)){
 						$fields.='<td>{$row.'.$col.'}</td>'."\n";
 					}
 				}
-				$headers.='<td class="options-tab" style="text-align: right">Opciones</td>';
+				$headers.='<td class="options-tab" style="text-align: right"></td>';
 				$fields.='<td class="options-tab" style="text-align: right"><a style="margin-right: 7px" href="{url:'.$table.'/view?id=$row.'.$PK.'}"><img src="{$system.path(img)}view.png" style="border: none;" /></a><a href="{url:'.$table.'/edit?id=$row.'.$PK.'}" style="margin-right: 7px"><img src="{$system.path(img)}edit.png" style="border: none;" /></a><a href="{url:'.$table.'/del?id=$row.'.$PK.'}" onclick="return confirm(\'Delete row?\');"><img src="{$system.path(img)}delete.png" style="border: none;" /></a></td>';
 				$_tpllist=str_replace("{headers}",$headers,$_tpllist);
 				$_tpllist=str_replace("{campos}",$fields,$_tpllist);

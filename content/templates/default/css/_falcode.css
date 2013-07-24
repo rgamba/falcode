@@ -5,7 +5,17 @@
     font-weight: bold;
     margin-bottom: 10px;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px #cccccc;
+}
+.sys-error{
+    background: #CD3E2D;
+    padding: 7px 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+    font-size: 14px;
     border-radius: 4px;
     box-shadow: 0 1px 1px #cccccc;
 }

@@ -21,7 +21,7 @@
 <tr>
     <td colspan="2" style="border-bottom: none; background: #f1f1f1;">
         <a class="button" href="#" onclick="$('#frm_save').submit(); return false;">{$system.lang.save}</a>
-        <a class="button" href="{url:{table}/list}">{$system.lang.reset}</a>
+        <a class="button" href="{url:{table}/list}">{$system.lang.cancel}</a>
         <a class="button" href="#" onclick="document.forms[0].reset(); return false;">{$system.lang.reset}</a>
     </td>
 </tr>
