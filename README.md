@@ -1,12 +1,18 @@
+FALCODE
+=======
+
 What is FALCODE?
+----------------
 
 Falcode is a web development framework based on PHP, MySQL and Javascript.
 It uses the MVC programming architecture and it's main goal is to run structured, maintainable and highly scalable web applications.
 
-REQUIREMENTS:
+Requirementes
+-------------
 - PHP 5.2 or newer
 
-INSTALATION:
+Installation
+------------
 1. Just copy and paste all the files contained in a HTTP accessible directory.
 2. Edit the .htaccess file in the root directory. In line 15, change "falcode/" to match your current installation. For example if your installation in in the root of your localhost or server (http://localhost) then this line should be: "RewriteRule ^(.*)$ index.php?_route_=$1?%{QUERY_STRING} [NC]".
 3. Change the engine/conf/definition.php file, change APP_NAME constant to match your app name.
