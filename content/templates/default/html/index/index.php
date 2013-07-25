@@ -2,7 +2,7 @@
 <h2>You have successfully installed your falcode APP</h2>
 <p>
     You are looking at the <b>index</b> module, which is the default module.<br>
-    Your first time using FALCODE? Read the <a href="<?php echo HTTP; ?>documentation/FALCODE_user_guide.pdf">user guide</a>.
+    Your first time using FALCODE? Read the <a href="<?php echo HTTP; ?>documentation/">user guide</a>.
 <br>
 Or check out the <a href="<?php echo url('examples'); ?>">examples module</a>.
 </p>
