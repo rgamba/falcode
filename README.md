@@ -7,7 +7,7 @@ What is FALCODE?
 Falcode is a web development framework based on PHP, MySQL and Javascript.
 It uses the MVC programming architecture and it's main goal is to run structured, maintainable and highly scalable web applications.
 
-Requirementes
+Requirements
 -------------
 - PHP 5.2 or newer
 
