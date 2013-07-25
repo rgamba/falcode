@@ -19,3 +19,7 @@ Installation
 4. If you are going to use database access, change the engine/conf/config.php file, put your database credentials in the Database section of the file. Take a look at the whole file, there are some variables that you might want to change here.
 5. Run the install/ directory, it will create the necessary tables and can optionally create the models, modules and CRUDs of your database automatically.
 6. Your app should be ready. Try and access the root directory from HTTP. Take a look at the user guide and examples module.
+
+User Guide
+----------
+Check out the user guide and documentation in the /documentation folder.
