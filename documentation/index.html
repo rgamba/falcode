@@ -866,7 +866,7 @@
 			<p>Finally call this snippet from inside your main view main.html:</p>
 			<div style="border-bottom-color:#bfbfbf; border-bottom-style:solid; border-bottom-width:0.5pt; border-left-color:#bfbfbf; border-left-style:solid; border-left-width:0.5pt; border-right-color:#bfbfbf; border-right-style:solid; border-right-width:0.5pt; border-top-color:#bfbfbf; border-top-style:solid; border-top-width:0.5pt; clear:both; margin:6pt 0pt 7pt">
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;h1&gt;Page title&lt;/h1&gt;</p>
-				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;?php $this-&gt;load-&gt;view( “../navigation/menu.php”)-&gt;render(); ?&gt;</p>
+				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;?php echo $this-&gt;load-&gt;view( “../navigation/menu.php”)-&gt;render(); ?&gt;</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt; padding-bottom:1pt">&lt;p&gt;Content&lt;/p&gt;</p>
 			</div>
 			<p>Note that the first argument of loadSnippet() receives the path of the view relative to content/templates/[active template]/</p>
@@ -908,7 +908,7 @@
 			<p>Now call the snippet along with it’s controller directly from main.php view:</p>
 			<div style="border-bottom-color:#bfbfbf; border-bottom-style:solid; border-bottom-width:0.5pt; border-left-color:#bfbfbf; border-left-style:solid; border-left-width:0.5pt; border-right-color:#bfbfbf; border-right-style:solid; border-right-width:0.5pt; border-top-color:#bfbfbf; border-top-style:solid; border-top-width:0.5pt; clear:both; margin:6pt 0pt 7pt">
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;h1&gt;Page title&lt;/h1&gt;</p>
-				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;?php $this-&gt;load-&gt;view( “../navigation/menu.php”,”navigation/menu.php”)-&gt;render(); ?&gt;</p>
+				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">&lt;?php echo $this-&gt;load-&gt;view( “../navigation/menu.php”,”navigation/menu.php”)-&gt;render(); ?&gt;</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt; padding-bottom:1pt">&lt;p&gt;Content&lt;/p&gt;</p>
 			</div>
 			<p>So the second parameter in $this-&gt;load-&gt;view() can either be an array of variables or a path to the snippet’s controller RELATIVE to controller/default/</p>
@@ -2230,7 +2230,9 @@
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">$lang[‘hello’] = “hola”;</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">$lang[‘name’] = “nombre”;</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">$lang[‘welcome_msg’] = “Hola %1, hoy es %2.”;</p>
-				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">Now inside the controller action:</p>
+				</div>
+                <p >Now inside the controller action:</p>
+            <div style="border-bottom-color:#bfbfbf; border-bottom-style:solid; border-bottom-width:0.5pt; border-left-color:#bfbfbf; border-left-style:solid; border-left-width:0.5pt; border-right-color:#bfbfbf; border-right-style:solid; border-right-width:0.5pt; border-top-color:#bfbfbf; border-top-style:solid; border-top-width:0.5pt; clear:both; margin:6pt 0pt 7pt">
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">public function test(){</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">              echo $this-&gt;lang-&gt;hello . “ Richard“;</p>
 				<p class="code" style="margin:0pt; padding-right:4pt; padding-left:4pt">              echo “&lt;br/&gt;”;</p>
@@ -2563,11 +2565,11 @@
 			<h1><a name="_Toc217563981"></a><a name="_Toc217566367">Access Login User Details</a></h1>
 			<p>User login details can be accessed directly using the User static class or the controller $this-&gt; object.</p>
 			<h2><a name="_Toc217563982"></a><a name="_Toc217566368">Checking If A User Is Logged</a></h2>
-			<p class="code">User::isLogged(); // Returns true or false<br />$this-&gt;user-&gt;logged(); // Alias of the above function used from inside the modulecontroller</p>
+			<p class="code">ThisUser::isLogged(); // Returns true or false<br />$this-&gt;user-&gt;logged(); // Alias of the above function used from inside the modulecontroller</p>
 			<h2><a name="_Toc217563983"></a><a name="_Toc217566369">Get User Login Variable</a></h2>
-			<p class="code">User::get(‘name’); // Returns the “name” field of the sql login query<br />$this-&gt;user-&gt;name; // Same result as the above function used from inside the module controller</p>
+			<p class="code">ThisUser::get(‘name’); // Returns the “name” field of the sql login query<br />$this-&gt;user-&gt;name; // Same result as the above function used from inside the module controller</p>
 			<h2><a name="_Toc217563984"></a><a name="_Toc217566370">Get Current User Role Name</a></h2>
-			<p class="code">User::getRoleId(); // If the user is not logged will return “public”<br />$this-&gt;user-&gt;role(); // Alias from the above function from inside the module controller</p>
+			<p class="code">ThisUser::getRoleId(); // If the user is not logged will return “public”<br />$this-&gt;user-&gt;role(); // Alias from the above function from inside the module controller</p>
 			<h1><a name="_Toc217563985"></a><a name="_Toc217566371">Logout</a></h1>
 			<p>To logout is the equivalent of destoying the current user’s session. But sometimes the session not only holds the login information so it would be unnecessary to wipe it all out if we just want to delete the current user’s login details.</p>
 			<p class="code">public function logout(){<br />              Auth::logout();<br />}</p>
@@ -2584,11 +2586,11 @@
 			<p style="line-height:115%; font-size:10pt"><span style="font-family:Monaco; font-size:10pt">)</span></p>
 			<h2><a name="_Toc217563987"></a><a name="_Toc217566373">Storing a User Configuration Variable</a></h2>
 			<p>You can store a configuration variable directly from the User class or from the controller:</p>
-			<p class="code">$this-&gt;user-&gt;config(‘menu_position’,’top’); // Only from within the module controller functions<br />User::configuration(‘menu_position’,’top’); //  Same as above</p>
+			<p class="code">$this-&gt;user-&gt;config(‘menu_position’,’top’); // Only from within the module controller functions<br />ThisUser::configuration(‘menu_position’,’top’); //  Same as above</p>
 			<p>If the variable “menu_position” already exists, it’s value will be updated to “top”, if not, it will be created.</p>
 			<h2><a name="_Toc217563988"></a><a name="_Toc217566374">Getting a User Configuration Variable</a></h2>
 			<p>Getting a user configuration variable is very easy:</p>
-			<p class="code">echo $this-&gt;user-&gt;config(‘menu_position’); // Result: “top”<br />echo User::configuration(‘menu_position’); // Result: “top”</p>
+			<p class="code">echo $this-&gt;user-&gt;config(‘menu_position’); // Result: “top”<br />echo ThisUser::configuration(‘menu_position’); // Result: “top”</p>
 			<p class="Title"><a name="_Toc217566375">Input Validation</a></p>
 			<p>In FALCODE, the input validation takes place in the frontend but as the frontend methods can be cheated, it’s very important to have a robust backend validation method.</p>
 			<p>The validation uses the Request and the RequestVar classes.</p>
@@ -6379,9 +6381,9 @@
 			<p class="code">$Uploader = new Uploader(array(“doc”,”pdf”));<br />$Uploader-&gt;upload($_FILES,”content/_files/uploads”);<br />echo “The new file name is: “ . $Uploader-&gt;newFile;</p>
 			<p>In case the upload function fails, it will throw an exception, that’s why it’s important call it inside a try-catch structure like this:</p>
 			<p class="code">Uploader = new Uploader(array(“doc”,”pdf”));<br />try{<br />     $Uploader-&gt;upload($_FILES,”content/_files/uploads”);<br />} catch(Exception $e){<br />     die(“Error code: “.$e-&gt;getCode().”, Error description: “ . $e-&gt;getMessage();<br />}<br />// If we’re here, everything went OK and the file was uploaded correctly<br />echo “The new file name is: “ . $Uploader-&gt;newFile;</p>
-			<h1>User</h1>
-			<p>The user class is used to access user login information and role details. It can be called directly from the controller class using <strong>$this-&gt;user</strong></p>
-			<h2>User::configuration($var[,$val])</h2>
+			<h1>ThisUser</h1>
+			<p>The ThisUser class is used to access current user login information and role details. It can be called directly from the controller class using <strong>$this-&gt;user</strong></p>
+			<h2>ThisUser::configuration($var[,$val])</h2>
 			<p>This function gets a user configuration variable stored in the usuario_config database table. If $val is set, then it will set the $var value to $val.</p>
 			<table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt">
 				<tr>
@@ -6419,10 +6421,10 @@
 				</tr>
 			</table>
 			<p>Example:</p>
-			<p class="code">User::configuration(“my_var”,”123”); // Sets my_var to 123<br />echo User::configuration(“my_var”); // Echoes “123”</p>
-			<h2>User::isLogged()</h2>
+			<p class="code">ThisUser::configuration(“my_var”,”123”); // Sets my_var to 123<br />echo ThisUser::configuration(“my_var”); // Echoes “123”</p>
+			<h2>ThisUser::isLogged()</h2>
 			<p>Returns true if the current user is logged. Else will return false.</p>
-			<h2>User::getConfVars($id)</h2>
+			<h2>ThisUser::getConfVars($id)</h2>
 			<p>This function will return an associative array containing all configuration variables of a certain user.</p>
 			<table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt">
 				<tr>
@@ -6449,9 +6451,9 @@
 				</tr>
 			</table>
 			<p>&#xa0;</p>
-			<h2>User::wipeSession()</h2>
+			<h2>ThisUser::wipeSession()</h2>
 			<p>Cleans the current user session and therefore logs the user out.</p>
-			<h2>User::get($var)</h2>
+			<h2>ThisUser::get($var)</h2>
 			<p>Gets a user variable as registered in the session login array.</p>
 			<table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt">
 				<tr>
@@ -6478,8 +6480,8 @@
 				</tr>
 			</table>
 			<p>Example:</p>
-			<p class="code">echo User::get(“email”);<br />// Same as:<br />echo $_SESSION[‘login’][‘email];</p>
-			<h2>User::set($var,$val)</h2>
+			<p class="code">echo ThisUser::get(“email”);<br />// Same as:<br />echo $_SESSION[‘login’][‘email];</p>
+			<h2>ThisUser::set($var,$val)</h2>
 			<p>Sets the user variable. This is generally not used excent within the Auth system class.</p>
 			<table cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-left:0pt">
 				<tr>
@@ -6517,10 +6519,10 @@
 				</tr>
 			</table>
 			<p>&#xa0;</p>
-			<h2>User::getRoleId()</h2>
+			<h2>ThisUser::getRoleId()</h2>
 			<p>Gets the current user role name as specified in the usuario_rol table.</p>
 			<h2>role()</h2>
-			<p>Alias of User::getRoleId().</p>
+			<p>Alias of ThisUser::getRoleId().</p>
 			<p>&#xa0;</p>
 			<div style="width:auto; height:auto; float:right;">
 				<p class="Footer"><span class="PageNumber">1</span></p>

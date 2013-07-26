@@ -22,4 +22,4 @@ Installation
 
 User Guide
 ----------
-Check out the user guide and documentation in the /documentation folder.
+Check out the [User Guide and Documentation](http://falcode.org/documentation) or download it from the /documentation folder.
