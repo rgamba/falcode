@@ -7,7 +7,7 @@
 * 
 * No further modifications needed on this file except
 * for error reporting and output prevent in case
-* of debugging. new
+* of debugging.
 * 
 * @package  FALCODE
 */
@@ -36,12 +36,6 @@ if(SYS_DEBBUGING==true){
 * Execution time limit
 */
 set_time_limit(60);
-
-/**
-* Force database setup (uncomment if needed)
-*/
-//if(!file_exists('install/dbsetup.txt') && is_dir('install'))
-//    header('Location: install/');
 
 /**
 * DO NOT modify anything below this line
