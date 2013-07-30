@@ -76,13 +76,15 @@ class Router{
 
     public static function parseCliControl(){
         $dspFile=Sys::get('config')->ctrl_controller_file;
+        $ctrl = explode('.',$_SERVER['argv'][1]);
+
         self::$Control=array(
-            'module' => $_SERVER['argv'][1],
-            'control' => $_SERVER['argv'][2],
+            'module' => $ctrl[0],
+            'control' => $ctrl[1],
             // Execution directory
-            'dir' => 'controller/cli/'.$_SERVER['argv'][1],
+            'dir' => 'controller/cli/'.$ctrl[0],
             // Executable file
-            'file' => ('controller/cli/'.$_SERVER['argv'][1]."/".$dspFile)
+            'file' => ('controller/cli/'.$ctrl[0]."/".$dspFile)
         );
     }
     

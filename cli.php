@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /**
  * Entry point for CLI ONLY
@@ -6,7 +7,8 @@
  */
 if(php_sapi_name() != "cli")
     die("Access denied");
-error_reporting(0);
+//error_reporting(0);
+error_reporting(E_CORE_ERROR | E_ERROR | E_PARSE | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
 define('SYS_ROOT',dirname(__FILE__)."/");
 require_once('engine/lib/core/Core.php');
 require_once("engine/conf/definition.php");
@@ -19,12 +21,7 @@ Sys::set('page_load_init',microtime(true));
 Sys::set('response',Response::getInstance());
 Sys::set('layout',Layout::create());
 Sys::set('loader',Loader::getInstance());
-// Database setup
-Db::$host=Sys::get('config')->db_host;
-Db::$user=Sys::get('config')->db_user;
-Db::$pass=Sys::get('config')->db_pass;
-Db::$name=Sys::get('config')->db_name;
-Db::$engine=Sys::get('config')->db_engine;
+
 /**
  * Database unique handle connection
  */
@@ -47,10 +44,10 @@ if(DSP_CONTROL == ""){
     if(in_array("main",$methods))
         $run = "main";
     else
-        die("Error: There is no method to run");
+        die("Error: There is no method to run\n");
 }else{
     if(!in_array(DSP_CONTROL,$methods))
-        die("Error: '".DSP_CONTROL."' method not found on the controller");
+        die("Error: '".DSP_CONTROL."' method not found on the controller\n");
     else
         $run = DSP_CONTROL;
 }

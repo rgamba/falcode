@@ -236,6 +236,78 @@ final class Db{
         return date('Y-m-d H:i:s', time() - date('Z', time()));
     }
 
+    public function createDatabase($name){
+        $ret = self::$driver->createDatabase($name);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function deleteDatabase($name){
+        $ret =  self::$driver->deleteDatabase($name);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function createTable($name,$fields){
+        $ret =  self::$driver->createTable($name,$fields);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function deleteTable($table){
+        $ret =  self::$driver->deleteTable($table);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function addField($table,$field){
+        $ret =  self::$driver->addField($table,$field);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function deleteField($table,$field){
+        $ret =  self::$driver->deleteField($table,$field);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function modifyField($table,$field){
+        $ret =  self::$driver->modifyField($table,$field);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function addKey($table,$field,$type="INDEX",$name = NULL){
+        $ret =  self::$driver->addKey($table,$field,$type,$name);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
+    public function deleteKey($table,$key){
+        $ret =  self::$driver->deleteKey($table,$key);
+        if($this->affectedRows() === false){
+            throw new Exception($this->getError());
+        }
+        return $ret;
+    }
+
     private function handleError($sql){
         if(Sys::get("config")->db_show_errors){
             echo '<div style="padding: 10px; background: #FDE8E9; margin-bottom: 10px; border: solid 1px #CC0000; color: #CC0000">Error on the query: <br /><span style="font-family: courier">'.$sql.'</span><br />Error: <b>'.self::$driver->getError().'</b></div>';

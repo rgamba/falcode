@@ -108,5 +108,181 @@ final class MySQL{
         $offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);  
         $this->query("SET time_zone = '$offset'"); 
     }
+
+    // Database manipulation functions
+
+    public function createDatabase($name){
+        return mysql_query("CREATE DATABASE $name");
+    }
+
+    public function deleteDatabase($name){
+        return mysql_query("DROP DATABASE $name");
+    }
+
+    public function createTable($name,array $fields,$if_not_exists = false,$engine = "InnoDB"){
+        $sql = "CREATE TABLE `$name`(";
+        $fields_sql = array();
+        $pk = "";
+        $unique_key = array();
+        $key = array();
+        foreach($fields as $i => $f){
+            foreach($f as $var => $val)
+                $f[strtolower($var)] = $val;
+
+            $f_sql = "";
+
+            if(empty($f['name']))
+                return false;
+            if(empty($f['type'])){
+                $f['type'] = "VARCHAR";
+                if(empty($f['size'])){
+                    $f['size'] = '255';
+                }
+            }
+            if(!empty($f['size'])){
+                $f['type'] = $f['type']."($f[size])";
+            }
+
+            $f_sql .= "`$f[name]` $f[type]";
+            if($f['signed'] === false){
+                $f_sql .= " unsigned";
+            }elseif($f['signed'] == true){
+                $f_sql .= " signed";
+            }
+
+            if($f['not_null'])
+                $f_sql .= " NOT NULL";
+            if($f['auto_increment'])
+                $f_sql .= " AUTO_INCREMENT";
+            if(!empty($f['default']))
+                $f_sql .= "DEFAULT " . (strtolower($f['default']) == 'null' ? "NULL" : "'$f[default]'");
+            if(!empty($f['pk']) || !empty($f['primary_key'])){
+                $pk = $f['name'];
+            }
+            if(!empty($f['unique']))
+                $unique_key[$f['unique']] = $f['name'];
+            if(!empty($f['key']))
+                $key[$f['key']] = $f['name'];
+
+            $fields_sql[] = $f_sql;
+        }
+
+        $sql .= implode($fields_sql,", ");
+        if(!empty($pk))
+            $sql .= ", PRIMARY KEY (`$pk`)";
+        if(!empty($unique_key)){
+            $sql .= ", UNIQUE KEY (`".implode($unique_key,"`), UNIQUE KEY (`") . "`)";
+        }
+        if(!empty($key)){
+            $sql .= ", KEY (`".implode($unique_key,"`), UNIQUE KEY (`") . "`)";
+        }
+        $sql .= ") ENGINE=$engine DEFAULT CHARSET=utf8";
+
+        return mysql_query($sql);
+    }
+
+    public function deleteTable($name){
+        return mysql_query("DROP TABLE `$name`");
+    }
+
+    public function addField($table,array $f){
+        foreach($f as $var => $val)
+            $f[strtolower($var)] = $val;
+
+        $f_sql = "";
+
+        if(empty($f['name']))
+            return false;
+        if(empty($f['type'])){
+            $f['type'] = "VARCHAR";
+            if(empty($f['size'])){
+                $f['size'] = '255';
+            }
+        }
+        if(!empty($f['size'])){
+            $f['type'] = $f['type']."($f[size])";
+        }
+
+        $f_sql .= "`$f[name]` $f[type]";
+        if($f['signed'] === false){
+            $f_sql .= " unsigned";
+        }elseif($f['signed'] == true){
+            $f_sql .= " signed";
+        }
+
+        if($f['not_null'])
+            $f_sql .= " NOT NULL";
+        if($f['auto_increment'])
+            $f_sql .= " AUTO_INCREMENT";
+        if(!empty($f['default']))
+            $f_sql .= "DEFAULT " . (strtolower($f['default']) == 'null' ? "NULL" : "'$f[default]'");
+
+        $sql = "ALTER TABLE `$table` ADD $f_sql";
+        return mysql_query($sql);
+    }
+
+    public function addKey($table,$field,$type="INDEX",$name = NULL){
+        switch(strtolower($type)){
+            case 'primary_key':
+            case 'primary key':
+                return mysql_query("ALTER TABLE `$table` ADD PRIMARY KEY (`$field`)");
+                break;
+            case 'unique':
+                return mysql_query("ALTER TABLE `$table` ADD UNIQUE (`$field`)");
+                break;
+            case 'index':
+            case 'key':
+                return mysql_query("ALTER TABLE `$table` ADD INDEX (`$field`)");
+                break;
+        }
+    }
+
+    public function deleteKey($table,$name = NULL){
+        if(strtolower($name) == "primary key" || strtolower($name) == "primary_key")
+            return mysql_query("ALTER TABLE `$table` DROP PRIMARY KEY");
+        return mysql_query("ALTER TABLE `$table` DROP INDEX (`$name`)");
+    }
+
+    public function deleteField($table,$field){
+        return mysql_query("ALTER TABLE `$table` DROP `$field`");
+    }
+
+    public function modifyField($table,$f){
+        foreach($f as $var => $val)
+            $f[strtolower($var)] = $val;
+
+        $f_sql = "";
+
+        if(empty($f['name']))
+            return false;
+        if(empty($f['type'])){
+            $f['type'] = "VARCHAR";
+            if(empty($f['size'])){
+                $f['size'] = '255';
+            }
+        }
+        if(!empty($f['size'])){
+            $f['type'] = $f['type']."($f[size])";
+        }
+        if(empty($f['new_name']))
+            $f['new_name'] = $f['name'];
+
+        $f_sql .= "`$f[name]` `$f[new_name]` $f[type]";
+        if($f['signed'] === false){
+            $f_sql .= " unsigned";
+        }elseif($f['signed'] == true){
+            $f_sql .= " signed";
+        }
+
+        if($f['not_null'])
+            $f_sql .= " NOT NULL";
+        if($f['auto_increment'])
+            $f_sql .= " AUTO_INCREMENT";
+        if(!empty($f['default']))
+            $f_sql .= "DEFAULT " . (strtolower($f['default']) == 'null' ? "NULL" : "'$f[default]'");
+
+        $sql = "ALTER TABLE `$table` CHANGE COLUMN $f_sql";
+        return mysql_query($sql);
+    }
     
 }

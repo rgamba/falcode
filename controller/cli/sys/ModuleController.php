@@ -5,7 +5,7 @@ class ModuleController extends Controller{
     }
 
     public function main(){
-        print("System default");
+        print("System default\n");
     }
 
     /**

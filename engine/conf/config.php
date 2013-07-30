@@ -23,7 +23,7 @@ $config['session_expire'] = 86000;
 $config['session_name'] = "falcode"; // Just alphanumeric characters!
 $config['session_domain'] = ".falcode.org";
 // Database
-$config['db_host'] = "localhost";
+$config['db_host'] = "127.0.0.1";
 $config['db_user'] = "root"; // <- CHANGE THIS
 $config['db_pass'] = ""; // <- CHANGE THIS
 $config['db_name'] = "falcode"; // <- CHANGE THIS

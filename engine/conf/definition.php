@@ -42,6 +42,7 @@ define('PATH_ENGINE_LIB',PATH_ENGINE."lib/");
 define('PATH_CORE',PATH_ENGINE_LIB.'core/');
 define('PATH_EXTENSIONS',PATH_ENGINE_LIB.'extensions/');
 define('PATH_ENGINE_CONF',PATH_ENGINE."conf/");
+define('PATH_ENGINE_MIGRATIONS',PATH_ENGINE_CONF."migration/");
 define('PATH_ENGINE_LANG',PATH_ENGINE."conf/lang/");
 // Controller 
 define('PATH_CONTROLLER',PATH_SYSTEM.'/controller/');
@@ -68,5 +69,10 @@ define('CTRL_CONTROL_VAR','i');
  * Lang
  */
 define('LANG_CTRL_VAR','lang');
+
+/**
+ * DB prefix
+ */
+define('SYS_DB_PREFIX','fc_');
 
 

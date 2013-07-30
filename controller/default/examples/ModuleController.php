@@ -234,4 +234,17 @@ class ModuleController extends Controller{
         // Send output
         echo json_encode($resp);
     }
+
+    public function createTable(){
+        $db = Db::getInstance();
+        $db->modifyField("contacts",array(
+            'name' => 'id_contact',
+            'type' => 'int',
+            'size' => '10',
+            'auto_increment' => true
+        ));
+        $db->addKey("contacts","id_contact","PRIMARY KEY");
+
+        echo $db->getError();
+    }
 }
