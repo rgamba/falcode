@@ -268,15 +268,15 @@ final class MySQL{
             $f['new_name'] = $f['name'];
 
         $f_sql .= "`$f[name]` `$f[new_name]` $f[type]";
-        if($f['signed'] === false){
+        if(@$f['signed'] === false){
             $f_sql .= " unsigned";
-        }elseif($f['signed'] == true){
+        }elseif(@$f['signed'] == true){
             $f_sql .= " signed";
         }
 
-        if($f['not_null'])
+        if(@$f['not_null'])
             $f_sql .= " NOT NULL";
-        if($f['auto_increment'])
+        if(@$f['auto_increment'])
             $f_sql .= " AUTO_INCREMENT";
         if(!empty($f['default']))
             $f_sql .= "DEFAULT " . (strtolower($f['default']) == 'null' ? "NULL" : "'$f[default]'");

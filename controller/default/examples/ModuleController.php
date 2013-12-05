@@ -237,14 +237,18 @@ class ModuleController extends Controller{
 
     public function createTable(){
         $db = Db::getInstance();
-        $db->modifyField("contacts",array(
-            'name' => 'id_contact',
-            'type' => 'int',
-            'size' => '10',
-            'auto_increment' => true
-        ));
-        $db->addKey("contacts","id_contact","PRIMARY KEY");
+        try{
+            $db->modifyField("contacts",array(
+                'name' => 'id_contact',
+                'type' => 'int',
+                'size' => '10',
+                'auto_increment' => true
+            ));
+            $db->addKey("contacts","id_contact","PRIMARY KEY");
+        }catch(Exception $e){
+            echo "Caught error: " . $db->getError();
+        }
 
-        echo $db->getError();
+        echo "<br>Finished";
     }
 }
