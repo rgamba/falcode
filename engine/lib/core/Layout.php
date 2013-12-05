@@ -1,15 +1,15 @@
 <?php
 /**~engine/lib/Layout.php
-* 
-* Layout (Singleton)
-* ---
-* 
-* @package      FALCODE
-* @version      3.0
-* @author       FALCODE
-* @uses         Template.php
-* @uses         TemplateEngine.php
-*/
+ *
+ * Layout (Singleton)
+ * ---
+ *
+ * @package      FALCODE
+ * @version      3.0
+ * @author       FALCODE
+ * @uses         Template.php
+ * @uses         TemplateEngine.php
+ */
 class Layout{
     // Variables definition
     private $_template='';
@@ -17,26 +17,26 @@ class Layout{
     private $title='';
     public $output=''; // Output
     private static $st_instance; // Unica instancia del singleton
-    
+
     /**
      * Constructor
      */
     private function __construct(){
         $this->title=Tpl::get('PAGE_TITLE');
     }
-    
+
     /**
-    * Unico metodo para crear LA instancia a esta clase
-    * es un SINGLETON!
-    * 
-    */
+     * Unico metodo para crear LA instancia a esta clase
+     * es un SINGLETON!
+     *
+     */
     public static function create(){
         if(!self::$st_instance){
             self::$st_instance=new Layout();
         }
         return self::$st_instance;
     }
-    
+
     /**
      * Regresa el output del template
      */
@@ -47,7 +47,7 @@ class Layout{
             return $this->output;
         return;
     }
-    
+
     /**
      * Check include files
      */
@@ -77,7 +77,7 @@ class Layout{
                 foreach($methods as $k => $v)
                     if($v == "__construct")
                         unset($methods[$k]);
-                
+
                 Sys::set('module_controller',new ModuleController());
                 $runMethod=NULL;
                 if(in_array((DSP_CONTROL.'Action'),$methods)){
@@ -90,7 +90,7 @@ class Layout{
                 elseif(DSP_CONTROL==""){
                     // Buscamos metodo default
                     $defaultAction=!empty(Sys::get('module_controller')->defaultAction) ? Sys::get('module_controller')->defaultAction : 'main';
-                    
+
                     if(in_array($defaultAction,$methods))
                         $runMethod=$defaultAction;
                     else
@@ -99,7 +99,7 @@ class Layout{
                     throw new ControllerException("Action not found",ControllerException::ACTION_NOT_FOUND);
                 }
                 if(Sys::get('module_controller')->breadcrumb()!=NULL){
-                    Tpl::set('BREADCRUMB',Sys::get('module_controller')->breadcrumb());   
+                    Tpl::set('BREADCRUMB',Sys::get('module_controller')->breadcrumb());
                 }
                 // Obtenemos el output
                 if($runMethod){
@@ -118,9 +118,9 @@ class Layout{
                 }
             }else{
                 die("Layout::checkFile() - Class ModuleController not found on ModuleController.php file (".DSP_FILE.")");
-            } 
+            }
 
-            
+
             // Requerimos template blank?
             if(!isset(Router::$Control['blank']))
                 Router::$Control['blank'] = false;
@@ -128,7 +128,7 @@ class Layout{
                 Router::$Control['ajax'] = false;
             if(Router::$Control['blank']==true || Router::$Control['ajax']==true)
                 $BLANK=true;
-            
+
             // Si se requirio otro template
             if(Tpl::get('ACTIVE')!=Tpl::get('DEF')){
                 Tpl::set(PATH,HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
@@ -137,7 +137,7 @@ class Layout{
             // Definimos constante de ruta global del template
             // activo
             define('TPL_DEF_PATH',Tpl::get('PATH'));
-            
+
         }catch(ControllerException $e){
 
             define('TPL_DEF_PATH',Tpl::get('PATH'));
@@ -194,18 +194,18 @@ class Layout{
         define('TPL_HTML',TPL_DEF_PATH.'html/');
         if(empty($_cont)) // Si cont no ha sido llenado por ModuleController...
             $_cont=get_include(Controller::$include);
-            
+
         // Die msg
         if(Sys::get('DIE_MSG')!=""){
             $this->content=Sys::get('DIE_MSG');
         }else{
             $this->content=$_cont;
         }
-        
+
         // Blank template
         $TPL_TEMPLATE=Tpl::get('MAIN_TEMPLATE');
         $this->_template=$TPL_TEMPLATE;
-        
+
         // Page title
         if(Sys::get('config')->tpl_append_title){
             if($this->title!=Tpl::get('PAGE_TITLE'))
@@ -217,7 +217,7 @@ class Layout{
         define('SYS_CHARSET',Sys::get('CHARSET'));
         define('SYS_CONTENT_TYPE',Sys::get('CONTENT_TYPE'));
     }
-    
+
     /**
      * Customize and unify templates
      * for the main page
