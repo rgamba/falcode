@@ -1,0 +1,15 @@
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+HOME=/
+
+# --------------------------------------------
+# This file should be added as a cron in /etc/cron.d/
+# or directly in the /etc/crontab file
+# NOTE: If php is not located within the PATH dir, please
+# change the PATH var in the beginning of the file or
+# use absolute directory to the php executable
+# ---------------------------------------------
+01 * * * * root php -f /var/www/html/app/cli.php sys.cleanup
+*/5 * * * * root php -f /var/www/html/app/cli.php sys.task
+*/10 * * * * root php -f /var/www/html/app/cli.php sys.mail
