@@ -131,7 +131,7 @@ class Layout{
 
             // Si se requirio otro template
             if(Tpl::get('ACTIVE')!=Tpl::get('DEF')){
-                Tpl::set(PATH,HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
+                Tpl::set('PATH',PATH_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
                 Core::autoIncludeFiles(); // Reload de auto includes
             }
             // Definimos constante de ruta global del template

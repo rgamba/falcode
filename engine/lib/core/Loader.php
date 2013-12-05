@@ -3,14 +3,14 @@ class Loader{
     private $parent;
     private $loaded=array();
     private static $instance=null;
-    
+
     public static function getInstance(){
         if(self::$instance==null){
             self::$instance=new Loader();
         }
         return self::$instance;
     }
-    
+
     private function __construct(){
         $this->loaded=array(
             'models' => array(),
@@ -19,7 +19,7 @@ class Loader{
             'templates' => array()
         );
     }
-    
+
     public function __get($module){
         return isset($this->loaded['models'][$module])
             ? $this->loaded['models'][$module]
@@ -27,11 +27,11 @@ class Loader{
                 ? null
                 : $this->loaded['views'][$module];
     }
-    
+
     public function isLoaded($type,$name){
         return isset($this->loaded[$type][$name]);
     }
-    
+
     public function helper($file){
         $ext=explode('.',$file);
         if($ext[count($ext)-1]!="php"){
@@ -42,7 +42,7 @@ class Loader{
         require_once(PATH_ENGINE_LIB.'helpers/'.$file);
         $this->loaded['helpers'][$file]=true;
     }
-    
+
     public function view($file=null,$vars=array(),$alias="template"){
 
         $ext=explode('.',$file);
@@ -78,12 +78,12 @@ class Loader{
         return $this->loaded['views'][$alias];
 
     }
-    
+
     public function getDefaultView(){
         @reset($this->loaded['views']);
         return @current($this->loaded['views']);
     }
-    
+
     public function extension($file){
         if(is_dir(PATH_EXTENSIONS.$file)){
             if(!file_exists(PATH_EXTENSIONS.$file.'/_autoload.php')){
@@ -97,7 +97,7 @@ class Loader{
         }
         $this->loaded['extensions'][$file]=true;
     }
-    
+
     public function js($file){
         $ext=explode('.',$file);
         if($ext[count($ext)-1]!="js"){
@@ -105,7 +105,7 @@ class Loader{
         }
         Sys::$JS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/js/$file";
     }
-    
+
     public function css($file){
         $ext=explode('.',$file);
         if($ext[count($ext)-1]!="css"){
@@ -113,30 +113,30 @@ class Loader{
         }
         Sys::$CSS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/css/$file";
     }
-    
+
     public function model($name){
         $name=str_replace(' ','',ucwords(str_replace('_',' ',$name)));
         $this->loaded['models'][$name]=new $name();
         return $this->loaded['models'][$name];
     }
-    
+
     /**
-    * Change the default layout file
-    * Located in content/templates/<active template>/
-    * 
-    * @param mixed $l
-    */
+     * Change the default layout file
+     * Located in content/templates/<active template>/
+     *
+     * @param mixed $l
+     */
     public function layout($file){
         Tpl::set('MAIN_TEMPLATE',$file);
     }
-    
+
     public function template($tpl){
         $load=false;
         if(Tpl::get('ACTIVE')!=$tpl)
             $load=true;
         Tpl::set('ACTIVE',$tpl);
         if($load){
-            Tpl::set('PATH',HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
+            Tpl::set('PATH',PATH_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
             Core::autoIncludeFiles(); // Reload de auto includes
         }
     }

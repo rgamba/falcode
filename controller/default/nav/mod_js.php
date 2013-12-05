@@ -4,5 +4,5 @@
 */
 $data['js'] = Sys::$JS_Files;
 
-if($tpl)
+if(@$tpl)
     $tpl->setContext($data);

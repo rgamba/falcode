@@ -4,5 +4,5 @@
 */
 $data['css'] = Sys::$CSS_Files;
 
-if($tpl)
+if(@$tpl)
     $tpl->setContext($data);
