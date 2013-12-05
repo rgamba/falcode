@@ -151,6 +151,8 @@ class TemplateEngine{
                 $this->handleVars();
                 $this->handleSwitchs();   
                 $this->compile();
+                // Includes after compile
+                $this->handleNoRender();
             }
         }else{
             $this->renderPhp();
@@ -186,7 +188,7 @@ class TemplateEngine{
     }
     
     private function assignGlobals(){
-        self::$globals['system']['session'] = $_SESSION;
+        self::$globals['system']['session'] = @$_SESSION;
         $this->setContext(self::$globals);
     }
 
@@ -315,7 +317,7 @@ class TemplateEngine{
                     $inc=$include[0];
                     unset($include[0]);
                     foreach($include as $kv){
-                        list($key,$val)=explode('=',$kv);
+                        @list($key,$val)=@explode('=',$kv);
                         $params[$key]=empty($val) ? true : $val;
                     }
                     $include=$inc;
@@ -341,6 +343,48 @@ class TemplateEngine{
             }
         }
     }
+
+    private function handleNoRender(){
+        $matches=array();
+        preg_match_all('/\{norender:(.+?)\}/',$this->output,$matches);
+        if(!empty($matches)){
+            foreach($matches[1] as $i => $include){
+                $include=trim($include);
+                //if(strpos($include,'.')===false)
+                //    $include=$include.$this->default_extension;
+                $include=explode(',',$include);
+                $params=array();
+                if(count($include)>1){
+                    $inc=$include[0];
+                    unset($include[0]);
+                    foreach($include as $kv){
+                        @list($key,$val)=@explode('=',$kv);
+                        $params[$key]=empty($val) ? true : $val;
+                    }
+                    $include=$inc;
+                }else
+                    $include=$include[0];
+
+                if(isset($params['find_controller'])){
+                    $rep=load_external_template($include,$this->root,$this->controller_root,NULL,$params);
+                }elseif(!empty($params['controller'])){
+                    $rep=load_external_template($include,$this->root,$this->controller_root,$params['controller'],$params);
+                }elseif(isset($params['external_url'])){
+                    $file=@file_get_contents($include);
+                    $rep=($file ? $file : '[unable to reach url: '.$include.']');
+                }elseif(isset($params['content'])){
+                    $content=url('contenido/view').$include;
+                    $file=@file_get_contents($content);
+                    $rep=($file ? $file : '[unable to find content: '.$content.']');
+                }else{
+                    $file=@file_get_contents($this->root.$include);
+                    $rep=($file ? $file : '[include not found: '.$this->root.$include.']');
+                }
+                $this->output=str_replace($matches[0][$i],$rep,$this->output);
+            }
+        }
+    }
+
 
     private function getParams($params){
         $i=0;
@@ -541,7 +585,7 @@ class TemplateEngine{
                     $params[1]=str_replace('$this','".'.$ov.'."',$params[1]);
                     if(isset($params[2]))
                         $params[2]=str_replace('$this','".'.$ov.'."',$params[2]);
-                    switch($params[3]){
+                    switch(@$params[3]){
                         case '':
                         case '==':
                         case '=':
@@ -573,7 +617,7 @@ class TemplateEngine{
                     $ov='"'.TemplateEngine_get_path($params[0]).'"';
                     break;
                 case 'msg':
-                    $ov='"'.TemplateEngine_get_sys_msg($params[0],$params[1]).'"';
+                    $ov='"'.TemplateEngine_get_sys_msg($params[0],(empty($params[1]) ? '' : $params[1])).'"';
                     break;
                 case 'preventTagEncode':
                     break;
@@ -625,7 +669,7 @@ class TemplateEngine{
                     if(self::ESCAPE_TAGS_IN_VARS == true)
                         $var_name = 'htmlspecialchars('.$var_name.',ENT_NOQUOTES)';
                 }
-                $rep='<?php echo '.$var_name.'; ?>';
+                $rep='<?php echo @'.$var_name.'; ?>';
                 $this->content=str_replace($matches[0][$i],$rep,$this->content);
             }
         }
@@ -759,7 +803,7 @@ class TemplateEngine{
                         $condition=str_replace(@$var_match[0][$j],$var_name,$condition);
                     }
                 }
-                $rep='<?php '.$matches[1][$i].'('.$condition.'): ?>';
+                $rep='<?php '.$matches[1][$i].'(@'.$condition.'): ?>';
                 $this->content=str_replace($matches[0][$i],$rep,$this->content);
             }
         }
@@ -899,21 +943,21 @@ function TemplateEngine_get_path($path){
         case '':
         case 'img':
         case 'images':
-            return HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/images/";
+            return HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/images/";
             break;
         case 'css':
-            return HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/css/";
+            return HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/css/";
             break;
         case 'javascript':
         case 'js':
-            return HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/js/";
+            return HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/js/";
             break;
         case 'swf':
         case 'flash':
-            return HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/swf/";
+            return HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/swf/";
             break;
         case 'template':
-            return HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/";
+            return HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/";
             break;
     }
 }

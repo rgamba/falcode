@@ -25,8 +25,8 @@ Tpl::set('PATH_COMMON',PATH_CONTENT_TEMPLATES.'common/');
 Tpl::set('PATH_EMAILS',PATH_CONTENT_TEMPLATES.'common/email/');
 Tpl::set('ABS_PATH',HTTP.'/'.PATH_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/"); // Absolute path
 Tpl::set('APPEND_PAGE_TITLE',Sys::get('config')->tpl_append_title);
-Tpl::set('META_DESCRIPTION',"Comunidad de diseño de logotipos, diseño web, naming y más.");
-Tpl::set('META_KEYWORDS',"diseño,logo,logotipo,diseño web,creatividad");
+Tpl::set('META_DESCRIPTION',Sys::get('config')->def_meta_desc);
+Tpl::set('META_KEYWORDS',Sys::get('config')->def_meta_keys);
 
 // Email server setup
 Mail::$host=Sys::get('config')->mail_host;
@@ -111,11 +111,6 @@ if(!defined('DSP_FILE'))
 define('DSP_AJAX',isset(Router::$Control['ajax']) && Router::$Control['ajax']==true);
 define('DSP_BLANK',isset(Router::$Control['blank']) && Router::$Control['blank']==true);
 
-// Auto include JS Module
-if(SYS_AUTO_INCLUDE_MOD_JS){
-    if(file_exists(PATH_ENGINE_JS.DSP_MODULE.".js"))
-        $SYS_JS[]=PATH_ENGINE_JS.DSP_MODULE.".js";
-}
 unset($_ctrl,$_CTRL);
  
 // Safe mode para los _POST y _GET
@@ -161,7 +156,7 @@ Core::setLang();
 Core::setCurrency();
 
 // FB
-if(!ThisUser::isLogged() && Sys::get('config')->login_required){
+/*if(!ThisUser::isLogged() && Sys::get('config')->login_required){
     Auth::initFb();
     $fb_login_url = Sys::get('fb')->getLoginUrl(array(
         'scope' => 'email,user_about_me,user_location,publish_actions'
@@ -171,7 +166,7 @@ if(!ThisUser::isLogged() && Sys::get('config')->login_required){
         'scope' => 'email,user_about_me,user_location,publish_actions',
         'redirect_uri' => url('home')
     ));
-}
+}*/
 
 // Timezone
 Core::setTimezone();
@@ -202,6 +197,7 @@ TemplateEngine::setGlobals(array(
        'server' => $_SERVER,
        'const' => get_defined_constants(),
        'user' => ThisUser::getLoginSession(),
+       'user_pic' => ThisUser::getPic(),
        'user_rol' => ThisUser::getRoleId(),
        'user_role' => ThisUser::getRoleId(),
        'pathway' => Router::$path,
@@ -228,9 +224,9 @@ TemplateEngine::setGlobals(array(
        'lang' => Lang::getDictionary(),
        'currency' => (empty($_SESSION['currency']) ? Sys::get('config')->base_currency : $_SESSION['currency']),
        'fb' => array(
-            'login_url' => $fb_login_url,
-            'login_home_url' => $fb_login_url_home,
-            'logout_url' => $fb_logout_url
+            'login_url' => empty($fb_login_url) ? '' : $fb_login_url,
+            'login_home_url' => empty($fb_login_url_home) ? '' : $fb_login_url_home,
+            'logout_url' => empty($fb_logout_url) ? '' : $fb_logout_url
        )
    ),
    'lang' => Lang::getDictionary()  

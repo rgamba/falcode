@@ -25,7 +25,7 @@ define('SYS_DEBBUGING',true);
 * Error reporting
 */
 if(SYS_DEBBUGING==true){
-    error_reporting(E_CORE_ERROR | E_ERROR | E_PARSE | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
+    error_reporting(E_ALL);
     ini_set('display_errors', '1');
 }else{
     error_reporting(0);

@@ -185,14 +185,14 @@ class Mail{
     */
     public function renderBody($tpl,$context=array()){  
         $this->tpl=new TemplateEngine();
-        $this->tpl->root=Tpl::get(PATH_COMMON)."email/";
+        $this->tpl->root=Tpl::get('PATH_COMMON')."email/";
         $this->tpl->controller_root=PATH_CONTROLLER_MODULES.'/';
         $this->tpl->load($this->tpl->root.$tpl);  
         $this->tpl->setContext($context);
         $this->params['body']=$this->tpl->render();
         $this->body=$this->params['body']; 
         $this->params['body']; 
-        $this->params['alt_body']=str_replace(array('<br />','<br>'),"\n\r",strip_tags($params['body']));
+        $this->params['alt_body']=str_replace(array('<br />','<br>'),"\n\r",strip_tags($this->params['body']));
         $this->params['html']=true;
     }
     
@@ -201,9 +201,9 @@ class Mail{
     * 
     * @param mixed $file Complete file path, relative to site root directory
     */
-    public function attach($file){
+    public function attach($file,$alias=""){
         if(file_exists($file))
-            $this->Mailer->AddAttachment($file);
+            $this->Mailer->AddAttachment($file,$alias);
     }
     
     /**
@@ -258,33 +258,37 @@ class Mail{
         $this->Mailer->Password=$this->con['pass'];
         $this->Mailer->Port=$this->con['port'];
         // Message
-        foreach($this->params['to'] as $i => $dest){
+        foreach(@$this->params['to'] as $i => $dest){
             $this->Mailer->AddAddress($dest[0],$dest[1]);
         }
-        foreach($this->params['cc'] as $i => $dest){
-            $this->Mailer->AddCC($dest[0],$dest[1]);
+        if(count(@$this->params['cc']) > 0){
+            foreach(@$this->params['cc'] as $i => $dest){
+                $this->Mailer->AddCC($dest[0],$dest[1]);
+            }
         }
-        foreach($this->params['bcc'] as $i => $dest){
-            $this->Mailer->AddBCC($dest[0],$dest[1]);
+        if(count(@$this->params['bcc']) > 0){
+            foreach(@$this->params['bcc'] as $i => $dest){
+                $this->Mailer->AddBCC($dest[0],$dest[1]);
+            }
         }
         $this->Mailer->From=$this->params['from'][0];
         $this->Mailer->FromName=$this->params['from'][1];
-        $this->Mailer->AddReplyTo($this->params['reply_to'][0],$this->params['reply_to'][1]);
+        $this->Mailer->AddReplyTo(@$this->params['reply_to'][0],@$this->params['reply_to'][1]);
         $this->Mailer->Subject=$this->params['subject'];
         if($this->params['html']==true)
             $this->Mailer->MsgHTML($this->params['body']);
         else
             $this->Mailer->Body=$this->params['body'];
-        $this->Mailer->AltBody=$this->params['alt_body'];
+        $this->Mailer->AltBody=@$this->params['alt_body'];
         try{
             ob_start();
             $this->Mailer->Send();
 
             $Logger = new Logger();
             $Logger->populate(array(
-                'evento' => 'SENDMAIL',
-                'mensaje' => (json_encode($this->params)),
-                'fecha' => 'now()'
+                'event' => 'sendmail',
+                'message' => (json_encode($this->params)),
+                'date' => 'now()'
             ));
             $Logger->save();
             ob_get_clean();
@@ -294,9 +298,9 @@ class Mail{
             
             $Logger = new Logger();
             $Logger->populate(array(
-                'evento' => 'SENDMAIL_ERROR',
-                'mensaje' => $e->getMessage(),
-                'fecha' => 'now()'
+                'event' => 'SENDMAIL_ERROR',
+                'message' => $e->getMessage(),
+                'date' => 'now()'
             ));
             $Logger->save();
             ob_get_clean();
@@ -306,9 +310,9 @@ class Mail{
             
             $Logger = new Logger();
             $Logger->populate(array(
-                'evento' => 'SENDMAIL_ERROR',
-                'mensaje' => $e->getMessage(),
-                'fecha' => 'now()'
+                'event' => 'sendmail_error',
+                'message' => $e->getMessage(),
+                'date' => 'now()'
             ));
             $Logger->save();
             ob_get_clean();

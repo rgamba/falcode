@@ -5,7 +5,7 @@ class Loader{
     private static $instance=null;
     
     public static function getInstance(){
-        if($instance==null){
+        if(self::$instance==null){
             self::$instance=new Loader();
         }
         return self::$instance;
@@ -21,7 +21,11 @@ class Loader{
     }
     
     public function __get($module){
-        return isset($this->loaded['models'][$module]) ? $this->loaded['models'][$module] : $this->loaded['views'][$module];
+        return isset($this->loaded['models'][$module])
+            ? $this->loaded['models'][$module]
+            : !isset($this->loaded['views'][$module])
+                ? null
+                : $this->loaded['views'][$module];
     }
     
     public function isLoaded($type,$name){
@@ -47,7 +51,7 @@ class Loader{
         if(is_string($vars)){
             if(file_exists(PATH_CONTROLLER_MODULES.$vars)){
                 include_once(PATH_CONTROLLER_MODULES.$vars);
-                $vars = $data;
+                $vars = empty($data) ? array() : $data;
             }
         }
 
@@ -76,8 +80,8 @@ class Loader{
     }
     
     public function getDefaultView(){
-        reset($this->loaded['views']);
-        return current($this->loaded['views']);
+        @reset($this->loaded['views']);
+        return @current($this->loaded['views']);
     }
     
     public function extension($file){
@@ -99,7 +103,7 @@ class Loader{
         if($ext[count($ext)-1]!="js"){
             $file.='.js';
         }
-        Sys::$JS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/js/$file";
+        Sys::$JS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/js/$file";
     }
     
     public function css($file){
@@ -107,7 +111,7 @@ class Loader{
         if($ext[count($ext)-1]!="css"){
             $file.='.css';
         }
-        Sys::$CSS_Files[]=HTTP.HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/css/$file";
+        Sys::$CSS_Files[]=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/css/$file";
     }
     
     public function model($name){
@@ -123,16 +127,16 @@ class Loader{
     * @param mixed $l
     */
     public function layout($file){
-        Tpl::set(MAIN_TEMPLATE,$file);
+        Tpl::set('MAIN_TEMPLATE',$file);
     }
     
     public function template($tpl){
         $load=false;
-        if(Tpl::get(ACTIVE)!=$tpl)
+        if(Tpl::get('ACTIVE')!=$tpl)
             $load=true;
-        Tpl::set(ACTIVE,$tpl);
+        Tpl::set('ACTIVE',$tpl);
         if($load){
-            Tpl::set(PATH,HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE).'/');
+            Tpl::set('PATH',HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
             Core::autoIncludeFiles(); // Reload de auto includes
         }
     }

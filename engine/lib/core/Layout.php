@@ -22,7 +22,7 @@ class Layout{
      * Constructor
      */
     private function __construct(){
-        $this->title=Tpl::get(PAGE_TITLE);
+        $this->title=Tpl::get('PAGE_TITLE');
     }
     
     /**
@@ -52,7 +52,7 @@ class Layout{
      * Check include files
      */
     private function fileCheck(){
-        $TPL_TEMPLATE=Tpl::get(MAIN_TEMPLATE);
+        $TPL_TEMPLATE=Tpl::get('MAIN_TEMPLATE');
         $BLANK=false;
         $INCLUDE=NULL;
 
@@ -122,21 +122,25 @@ class Layout{
 
             
             // Requerimos template blank?
+            if(!isset(Router::$Control['blank']))
+                Router::$Control['blank'] = false;
+            if(!isset(Router::$Control['ajax']))
+                Router::$Control['ajax'] = false;
             if(Router::$Control['blank']==true || Router::$Control['ajax']==true)
                 $BLANK=true;
             
             // Si se requirio otro template
-            if(Tpl::get(ACTIVE)!=Tpl::get(DEF)){
-                Tpl::set(PATH,HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE).'/');
+            if(Tpl::get('ACTIVE')!=Tpl::get('DEF')){
+                Tpl::set(PATH,HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE').'/');
                 Core::autoIncludeFiles(); // Reload de auto includes
             }
             // Definimos constante de ruta global del template
             // activo
-            define('TPL_DEF_PATH',Tpl::get(PATH));
+            define('TPL_DEF_PATH',Tpl::get('PATH'));
             
         }catch(ControllerException $e){
 
-            define('TPL_DEF_PATH',Tpl::get(PATH));
+            define('TPL_DEF_PATH',Tpl::get('PATH'));
             Tpl::set('ERROR',true);
             if(file_exists(PATH_CONTROLLER_MODULES.DSP_MODULE.'/ErrorController.php') && $e->getCode()!=ControllerException::MODULE_NOT_FOUND){
                 require_once(PATH_CONTROLLER_MODULES.DSP_MODULE.'/ErrorController.php');
@@ -180,7 +184,7 @@ class Layout{
                     $param=DSP_MODULE;
                 elseif($method_to_call=="ActionNotFound")
                     $param=DSP_CONTROL;
-                Sys::get('module_controller')->{$method_to_call}($e->getMessage(),$param);
+                Sys::get('module_controller')->{$method_to_call}($e->getMessage(),@$param);
                 if(Sys::get('module_controller')->load->getDefaultView() && !Sys::get('module_controller')->rendered)
                     Sys::get('module_controller')->render();
                 $_cont=ob_get_clean();
@@ -199,19 +203,19 @@ class Layout{
         }
         
         // Blank template
-        $TPL_TEMPLATE=Tpl::get(MAIN_TEMPLATE);
+        $TPL_TEMPLATE=Tpl::get('MAIN_TEMPLATE');
         $this->_template=$TPL_TEMPLATE;
         
         // Page title
         if(Sys::get('config')->tpl_append_title){
-            if($this->title!=Tpl::get(PAGE_TITLE))
-                $this->title=Tpl::get(PAGE_TITLE)." - ".APP_NAME;
+            if($this->title!=Tpl::get('PAGE_TITLE'))
+                $this->title=Tpl::get('PAGE_TITLE')." - ".APP_NAME;
         }else{
-            $this->title=Tpl::get(PAGE_TITLE);
+            $this->title=Tpl::get('PAGE_TITLE');
         }
-        define('BLANK_OUTPUT',(Tpl::get(MAIN_TEMPLATE)==Tpl::get(BLANK) ? true : false));
-        define('SYS_CHARSET',Sys::get(CHARSET));
-        define('SYS_CONTENT_TYPE',Sys::get(CONTENT_TYPE));
+        define('BLANK_OUTPUT',(Tpl::get('MAIN_TEMPLATE')==Tpl::get('BLANK') ? true : false));
+        define('SYS_CHARSET',Sys::get('CHARSET'));
+        define('SYS_CONTENT_TYPE',Sys::get('CONTENT_TYPE'));
     }
     
     /**

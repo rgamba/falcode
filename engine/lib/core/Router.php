@@ -13,7 +13,16 @@ class Router{
     const CONTROL_SEP='/';
     const ROUTE_VAR='_route_';
 
-    public static $Control=array();
+    public static $Control=array(
+        'module' => null,
+        'control' => null,
+        'dir' => null,
+        'file' => null,
+        'path' => null,
+        'hash' => null,
+        'blank' => false,
+        'ajax' => false
+    );
     public static $module=NULL;
     public static $action=NULL;
     private static $control=NULL;
@@ -52,16 +61,16 @@ class Router{
         self::$dspFile=$dspFile;
         self::$defControl=explode(self::CONTROL_SEP,Sys::get('config')->ctrl_controller_file);
         self::$Control=array(
-            'module' => self::$control[0],
-            'control' => (empty(self::$control[1]) ? self::$defControl[1] : self::$control[1]),
+            'module' => @self::$control[0],
+            'control' => @(empty(self::$control[1]) ? self::$defControl[1] : self::$control[1]),
             // Execution directory
-            'dir' => (is_dir(PATH_CONTROLLER_MODULES.self::$control[0]) ? PATH_CONTROLLER_MODULES.self::$control[0] : false),
+            'dir' => @(is_dir(PATH_CONTROLLER_MODULES.self::$control[0]) ? PATH_CONTROLLER_MODULES.self::$control[0] : false),
             // Executable file
             'file' => (PATH_CONTROLLER_MODULES.self::$control[0]."/".$dspFile),
             // Pathway
-            'path' => $_GET['_path_'],
+            'path' => (!empty($_GET['_path_']) ? $_GET['_path_'] : ''),
             // Hash
-            'hash' => $_GET['_hash_']
+            'hash' => (!empty($_GET['_hash_']) ? $_GET['_hash_'] : '')
         );
         unset($_GET['_path_'],$_GET['_hash_']);
         if(substr(self::$Control['control'],-3)=='ajx'){
@@ -132,8 +141,8 @@ class Router{
     */
     public static function parseFriendlyUrl(){
         if(Sys::get('config')->ctrl_enable_mod_rewrite){
-            $route=$_GET[self::ROUTE_VAR];
-            list($route,$getvars)=explode('?',$route,2); // Httpquery vars
+            $route=@$_GET[self::ROUTE_VAR];
+            @list($route,$getvars)=explode('?',$route,2); // Httpquery vars
             // Parte get standard
             if(!empty($getvars)){
                 $gv=array();

@@ -158,7 +158,7 @@ function url($url='',$subdomain=NULL,$port=NULL){
 	$qry=array();
     $path = array();
 	$ctrl=array();
-	$ctrl=array($link[2],$link[4]); // act/sec
+	$ctrl=@array($link[2],$link[4]); // act/sec
 	if(!empty($link[6])){
         $link[6]=str_replace('&amp;','&',$link[6]);
 		$kvp=explode("&",$link[6]);
@@ -168,7 +168,7 @@ function url($url='',$subdomain=NULL,$port=NULL){
                 $path[] = $pair[1];
                 continue;
             }
-			$qry[$pair[0]]=$pair[1];
+			@$qry[$pair[0]]=$pair[1];
 		}
 	}
 	$link=array(
@@ -187,9 +187,9 @@ function url($url='',$subdomain=NULL,$port=NULL){
             return $path_http.$key.'/';
     }
     
-	if(LINK_PREPEND_URL){
+	//if(LINK_PREPEND_URL){
 		$replace=$path_http; // Base host url
-    }   
+    //}
 	if(Sys::get('config')->ctrl_enable_mod_rewrite==true){
 		$replace.=$link['ctrl'][0].(!empty($link['ctrl'][1]) ? ".".$link['ctrl'][1] : '')."/";
 		if(!empty($link['get'])){

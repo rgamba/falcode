@@ -24,19 +24,31 @@ class ModuleController extends Controller{
     }
     
     private function getFromCache(){
-        if($this->config->enable_content_cache!=true || !file_exists(PATH_CACHE.md5("image?src=$_REQUEST[src]&width=$_REQUEST[width]&height=$_REQUEST[height]&force=$_REQUEST[force]&folder=$_REQUEST[folder]&zoom=$_REQUEST[zoom]")))
-            return false; 
-        $creation_time=filectime(PATH_CACHE.md5("image?src=$_REQUEST[src]&width=$_REQUEST[width]&height=$_REQUEST[height]&force=$_REQUEST[force]&folder=$_REQUEST[folder]&zoom=$_REQUEST[zoom]"));
+        //if($this->config->enable_content_cache!=true)
+        //    return false;
+        $r = $_GET;
+        ksort($r);
+        $cache_name=sha1("image?".http_build_query($r));
+        if(!file_exists(PATH_CACHE.$cache_name))
+            return false;
+
+        $creation_time=filectime(PATH_CACHE.$cache_name);
         if(time()-$creation_time >= $this->config->cache_lifetime){
-            unlink(PATH_CACHE.md5("image?src=$_REQUEST[src]&width=$_REQUEST[width]&height=$_REQUEST[height]&force=$_REQUEST[force]&folder=$_REQUEST[folder]&zoom=$_REQUEST[zoom]"));
+            unlink(PATH_CACHE.$cache_name);
             return false;
         }
-        $this->cache=file_get_contents(PATH_CACHE.md5("image?src=$_REQUEST[src]&width=$_REQUEST[width]&height=$_REQUEST[height]&force=$_REQUEST[force]&folder=$_REQUEST[folder]&zoom=$_REQUEST[zoom]"));
+        $this->cache=PATH_CACHE.$cache_name;
         return true;
     }
     
     public function delete(){
         $this->blank(true);
         include("act_del.php");
+    }
+
+    public function qr(){
+        $this->blank(true);
+        $this->response->setHeader("Content-Type: image/jpeg");
+        include("act_qr.php");
     }
 }

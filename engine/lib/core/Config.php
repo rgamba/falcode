@@ -14,7 +14,7 @@ class Config{
     }
     
     public function __get($key){
-        return $this->items[$key];
+        return @$this->items[$key];
     }
     
     public function __set($key,$val){

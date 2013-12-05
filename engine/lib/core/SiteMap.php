@@ -66,7 +66,7 @@ class SiteMap{
     }
     
     public static function getAncestors($name,&$array){
-        $m=self::$map[$name];
+        $m=@self::$map[$name];
         if(empty($m))
             return;
         if(!empty($m['parent'])){

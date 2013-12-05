@@ -4,9 +4,9 @@
 * installed in the extensions dir
 */ 
 $this->load->extension("wideimage");
-$cache=$_REQUEST['cache']=="false" ? false : true;    
+$cache=@$_REQUEST['cache']=="false" ? false : true;
 if($this->getFromCache()==true && $cache!=false){
-    echo $this->cache;
+    readfile($this->cache);
 }else{
     if(!empty(Router::$path)){
         $_REQUEST['folder'] = Router::$path[0];
@@ -34,7 +34,7 @@ if($this->getFromCache()==true && $cache!=false){
     * 
     * @var mixed
     */
-    $img=$_REQUEST['src'];
+    $img=@$_REQUEST['src'];
     /**
     * Image width
     * 
@@ -74,8 +74,20 @@ if($this->getFromCache()==true && $cache!=false){
     * If not forced, will take the largest of width or height and scale to that value
     */
     $position=empty($_REQUEST['position']) ? 'outside' : $_REQUEST['position'];
+
+    if(@$_REQUEST['location'] == "s3"){
+        // The file is hosted on the S3 AWS server
+        $this->load->extension("S3.php");
+        $S3 = new S3($this->config->aws_access_key, $this->config->aws_secret);
+        $image_file = $S3->getObject($_REQUEST['bucket'],$img);
+        $image_file = $image_file->body;
+    }else{
+        // The file is hosted locally
+        $image_file = PATH_CONTENT_FILES.$upperfolder.$subfolder.$img;
+    }
+
     try{
-        $Image=WideImage::load(PATH_CONTENT_FILES.$upperfolder.$subfolder.$img);
+        $Image=WideImage::load($image_file);
         if($force){
             if($position == "outside"){
                 $result = $Image->resize($width,$height,'outside')->crop("center","center",$width,$height);
@@ -97,12 +109,14 @@ if($this->getFromCache()==true && $cache!=false){
         $result->output($format);
         $output=ob_get_clean();
         
-        if($this->config->enable_content_cache==true){
-            $file_name=md5("image?src=$_REQUEST[src]&width=$_REQUEST[width]&height=$_REQUEST[height]&force=$_REQUEST[force]&folder=$_REQUEST[folder]&zoom=$_REQUEST[zoom]");
+        //if($this->config->enable_content_cache==true){
+            $r = $_GET;
+            ksort($r);
+            $file_name=sha1("image?".http_build_query($r));
             $cache=fopen(PATH_CACHE.$file_name,'w');
             fwrite($cache,$output);
             fclose($cache);
-        }
+        //}
         
         echo $output;
     }catch (Exception $e){

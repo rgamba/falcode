@@ -315,8 +315,8 @@ class Paginator{
             $paginator[]=array(
                 'current' => ($num==$this->navActPg),
                 $this->tplItem => $num,
-                $this->tplItemUrl => url($url.$num),
-                'post' => $post
+                $this->tplItemUrl => url($url.$num)//,
+                //'post' => $post
             );
         }
         $tpl->assign('paginator',$paginator);
@@ -332,7 +332,7 @@ class Paginator{
         $tpl->assign($this->tplFromReg,$this->infLimit);
         $tpl->assign($this->tplToReg,$this->supLimit);
         $tpl->assign($this->tplTotalReg,$this->numRows);
-        $tpl->post=$post;
+        //$tpl->post=$post;
         
         $this->tplHtml=$tpl->render(); 
         return $this->tplHtml;
@@ -344,6 +344,7 @@ class Paginator{
      * @return string
      */
     function parseGet($method='get',$except=array()){
+        $get=$_GET;
         if(sizeof($except)>0){
             $request=$get;
             foreach($except as $i => $val){
@@ -351,7 +352,7 @@ class Paginator{
                 unset($request[$val]);
             }
         }
-        $get=$_GET;
+
         if(!empty($_POST['search']))
             $get['search']=$_POST['search'];
         if($method=='get'){
@@ -368,6 +369,8 @@ class Paginator{
     }
     
     public function limitQuery($include_kw = true){
+        if($this->numRows <= 0)
+            return (!$include_kw ? "1" : "");
         return ($include_kw ? "Limit " : '').$this->fromRange.", ".$this->navRowsPerPg;
     }
     

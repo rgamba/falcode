@@ -30,12 +30,19 @@ class Auth{
         // Verificamos login por cookies
         if(Sys::get('config')->login_set_cookie==true && empty($post) && self::hasCookie()){
             if(self::hasCookie()){
+                $_cookie = @unserialize($_COOKIE[self::COOKIE_NAME]);
                 $U=new User();
-                $U->select(NULL,"WHERE SHA1(CONCAT(".Sys::get('config')->user_username_field.",".Sys::get('config')->user_password_field.")) = '".Sys::$Db->escape($_COOKIE[self::COOKIE_NAME])."'");
+                $U->where("id_user = '{0}'",$_cookie['user'])
+                    ->where("persist_series = '{0}'",$_cookie['series'])
+                    ->where("persist_token = '{0}'",$_cookie['token'])
+                    ->execute();
+                //$U->select(NULL,"WHERE SHA1(CONCAT(".Sys::get('config')->user_username_field.",".Sys::get('config')->user_password_field.")) = '".Sys::$Db->escape($_COOKIE[self::COOKIE_NAME])."'");
+
                 if($U->rows>0){
                     $cookie=$U->next();
-                    $post[Sys::get('config')->user_username_field]=$cookie[Sys::get('config')->user_username_field];
-                    $post[Sys::get('config')->user_password_field]=$cookie[Sys::get('config')->user_password_field];   
+                    $post[Sys::get('config')->user_username_field]=$U->{Sys::get('config')->user_username_field};
+                    $post[Sys::get('config')->user_password_field]=$U->{Sys::get('config')->user_password_field};
+                    Sys::get('config')->login_encode_pass=false;
                 }
             }
         }
@@ -52,7 +59,11 @@ class Auth{
         }
         
         if(Sys::get('config')->login_encode_pass==true){
-            $post[Sys::get('config')->user_password_field]=sha1($post[Sys::get('config')->user_password_field]);     
+            $hashed_pass = Db::getInstance();
+            $qry_hashed = $hashed_pass->query("SELECT pass FROM user WHERE username = '".$hashed_pass->escape($post[Sys::get('config')->user_username_field])."'");
+            $hashed_pass = $hashed_pass->getRow($qry_hashed);
+            $raw_pass = $post[Sys::get('config')->user_password_field];
+            $post[Sys::get('config')->user_password_field]=crypt($post[Sys::get('config')->user_password_field],$hashed_pass['pass']);
         }
 
         $query=Sys::get('config')->user_login_query;
@@ -62,22 +73,43 @@ class Auth{
 
         if(@Sys::$Db->numRows()<=0){
             ThisUser::addTry();
-            self::throwException(Sys::get('config')->login_error_msg);
+            self::throwException(Lang::get('login_error'));
             return false;
         }
 
         if(self::SES_REGISTER_TABLE_FIELDS==1)
             self::registerVars($pass);
         ThisUser::clearAttempts();
-        if(!empty($post['set_cookie']) && Sys::get('config')->login_set_cookie==true){
+        ThisUser::set('raw_pass', Cipher::encrypt($raw_pass,CRYPTO_KEY));
+        /*if(!empty($post['set_cookie']) && Sys::get('config')->login_set_cookie==true){
             self::setCookie($post[Sys::get('config')->user_username_field],$post[Sys::get('config')->user_password_field]);
-        }else{
+        }*/
+
+        if((self::hasCookie() || !empty($post['set_cookie'])) && Sys::get('config')->login_set_cookie){
+            // First reset the currect token
+            //self::deleteCookie();
+
+            Sys::get('loader')->helper("string");
+            $U = new User();
+            $U->where("id_user = '{0}'",ThisUser::get("id_user"))->execute();
+            $U->next();
+            if($U->persist_series == "")
+                $U->persist_series = rand_string(20);
+            $U->persist_token = rand_string('20');
+            $U->save();
+            $cookie = serialize(array(
+                'user' => $U->id_user,
+                'series' => $U->persist_series,
+                'token' => $U->persist_token
+            ));
+            self::setCookie($cookie);
         }
+
         return true;
     }
     
-    private static function setCookie($user,$pass){
-        setcookie(self::COOKIE_NAME,sha1($user.$pass),time()+60*60*24*Sys::get('config')->login_cookie_expire_days,'/');
+    private static function setCookie($cookie){
+        setcookie(self::COOKIE_NAME,$cookie,time()+60*60*24*Sys::get('config')->login_cookie_expire_days,'/');
     }
     
     private static function deleteCookie(){

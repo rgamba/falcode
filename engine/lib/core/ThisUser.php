@@ -34,83 +34,86 @@ class ThisUser{
         self::wipeSession();
     }
     
-    public function config($var,$val=NULL){
-        return self::configuration($var,$val);
+    public function config($var,$val=NULL,$id_user = NULL){
+        return self::configuration($var,$val,$id_user);
     }
     
-    public static function getPic($id=NULL,$w=50,$h=50,$f=true){
-        if(!empty($id)){
-            $Usuario=new Usuario();
-            $Usuario->select($id);
-            $user=$Usuario->next();
-        }else{
-            $user=$_SESSION[Auth::SES_LOGIN_INDEX];
+    public static function getPic(){
+        if(!self::islogged())
+            return 'avatar.gif';
+        $id_admin = User::find(self::get('id_user'))->getTeamAdmin();
+        if($id_admin != false){
+            if(self::configuration('company_logo',NULL,$id_admin)){
+                return self::configuration('company_logo',NULL,$id_admin);
+            }else{
+                return 'avatar.gif';
+            }
         }
 
-        $imagen=$user['imagen'];
-        if(empty($imagen)){
-            if($user['sexo']=="f")
-                $imagen="defprofile.png";   
-            else
-                $imagen="defprofile.png";
+        if(self::configuration('company_logo')){
+            return self::configuration('company_logo');
+        }else{
+            return 'avatar.gif';
         }
-        
-        if($w==NULL)
-            return $imagen;
-            
-        return url('image?src='.$imagen.'&folder=usuario&height='.$h.'&width='.$w.'&force='.(!$f ? 0 : 1));   
     }
     
-    public static function configuration($var,$val=NULL){
-        $Usuario = new UsuarioConfig();
-        $Usuario->where("id_user = {0} AND var = '{1}'",self::get("id_user"),$var)->execute();
-        if($Usuario->rows <= 0){
+    public static function configuration($var,$val=NULL, $id_user = NULL){
+        if(is_null($id_user))
+            $id_user = self::get("id_user");
+        $User = new UserConfig();
+        $User->where("id_user = {0} AND var = '{1}'",$id_user,$var)->execute();
+        if($User->rows <= 0){
             // No hay registro
             if(is_null($val)){
+                // Lectura
                 return NULL;
             }
             if(!empty($val)){
+                // Escritura
                 if(!is_array($val))
                     $val = array($val);
                 foreach($val as $_v){
-                    $Usuario->clear();
-                    $Usuario->id_user = self::get("id_user");
-                    $Usuario->var = $var;
-                    $Usuario->val = $_v;
-                    $Usuario->save();
+                    $User->clear();
+                    $User->id_user = $id_user;
+                    $User->var = $var;
+                    $User->val = $_v;
+                    $User->save();
                 }
                 return true;
             }    
         }else{
             // Ya hay registro
             if(is_null($val)){
-                if($Usuario->rows > 1){
+                // Solo lectura
+                if($User->rows > 1){
                     $ret = array();
-                    while($Usuario->next())
-                        $ret[] = $Usuario->val;
+                    while($User->next())
+                        $ret[] = $User->val;
                     return $ret;
                 }
-                $Usuario->next();
-                return $Usuario->val;
+                $User->next();
+                return $User->val;
             }else{
+                // Escritura
+                $db = Db::getInstance();
+                $db->query("DELETE FROM user_config WHERE id_user = '".$id_user."' AND var = '".$db->escape($var)."'");
                 if($val === ""){
                     // Borramos
-                    $db = Db::getInstance();
-                    $db->query("DELETE FROM usuario_config WHERE id_user = '".self::get("id_user")."' AND var = '".$db->escape($var)."'");
                     return true;
                 }else{
+                    // Update
                     if(!is_array($val))
                         $val = array($val);
                     foreach($val as $_v){
                         // Checamos si ya existe combinacion user/var/val
-                        $Usuario->where("id_user = {0} AND var = '{1}' AND val = '{2}'",self::get("id_user"),$var,$_v)->execute();
-                        if($Usuario->rows > 0)
+                        $User->where("id_user = {0} AND var = '{1}' AND val = '{2}'",$id_user,$var,$_v)->execute();
+                        if($User->rows > 0)
                             continue;
-                        $Usuario->clear();
-                        $Usuario->id_user = self::get("id_user");
-                        $Usuario->var = $var;
-                        $Usuario->val = $_v;
-                        $Usuario->save();
+                        $User->clear();
+                        $User->id_user = $id_user;
+                        $User->var = $var;
+                        $User->val = $_v;
+                        $User->save();
                     }
                     return true;
                 }
@@ -186,11 +189,11 @@ class ThisUser{
     public static function get($key=NULL){
         if(empty($key))
             return false;
-        return $_SESSION[Auth::SES_LOGIN_INDEX][$key];
+        return @$_SESSION[Auth::SES_LOGIN_INDEX][$key];
     }
     
     public static function getLoginSession(){
-        return $_SESSION[Auth::SES_LOGIN_INDEX];  
+        return empty($_SESSION[Auth::SES_LOGIN_INDEX]) ? array() : $_SESSION[Auth::SES_LOGIN_INDEX];
     }
     
     /**

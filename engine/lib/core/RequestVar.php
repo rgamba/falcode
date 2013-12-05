@@ -100,11 +100,12 @@ class RequestVar{
         return $this;
     }
 
-    public function regex($regex,$msg = ""){
+    public function regex($regex,$msg = "", $allow_empty = false){
         $this->rules[] = array(
             'rule' => 'regex',
             'val' => $regex,
-            'msg' => $msg
+            'msg' => $msg,
+            'allow_empty' => $allow_empty
         );
         return $this;
     }
@@ -195,6 +196,9 @@ class RequestVar{
                         }
                         break;
                     case 'regex':
+                        if($rule['allow_empty'] && empty($v)){
+                            break;
+                        }
                         if(preg_match($rule['val'],$v) == 0){
                             if(!empty($rule['msg']))
                                 $this->error = $rule['msg'];
@@ -202,7 +206,12 @@ class RequestVar{
                         }
                         break;
                     case 'function':
-                        $ret = call_user_func($rule['val'],$v);
+                        if(is_callable($rule['val'])){
+                            $ret = $rule['val']($v);
+                        }else{
+                            $ret = call_user_func($rule['val'],$v);
+                        }
+
                         if(!$ret){
                             if(!empty($rule['msg']))
                                 $this->error = $rule['msg'];

@@ -92,7 +92,7 @@ class ModuleController extends Controller{
 
     public function errors(){
         // This authorization system is obviously very insecure, it's only for example purpuse
-        if($_GET['token'] != '123'){
+        if(@$_GET['token'] != '123'){
             // Once the exception is thrown the execution in this controller is stopped
             // and the ErrorController's access denied function is executed
             $this->throwAccessDenied("Access denied!"); // No code below this line will be executed
@@ -113,7 +113,7 @@ class ModuleController extends Controller{
         // Create an instance of the model class
         $User = new User();
         // Make some queries
-        $User->where("username = '{0}'",$_REQUEST['user'])->execute();
+        $User->where("username = '{0}'",$this->request->user)->execute();
         // Check if it was found
         if($User->rows <= 0)
             $this->throwCustomError("User not found","The username you requested does not exist");

@@ -24,7 +24,7 @@ class Acl extends AccessControl{
         if($Ur->num_rows > 0){
             foreach($Ur->rows as $ur){
             //while($ur=$Ur->next()){
-                if(empty($ur['id_padre'])){
+                if(empty($ur['id_parent'])){
                     $this->addRole(new UserRole($ur['name']));
                 }else{
                     $this->addRole(new UserRole($ur['name']),$ur['nombre_padre']);
@@ -81,7 +81,7 @@ class Acl extends AccessControl{
         /*$Ur=new UsuarioRol($roleId);
         $Ur->select();  $Ur->next();*/
 
-        $parent=$Ur->row['id_padre'];
+        $parent=$Ur->row['id_parent'];
         if(empty($parent))
             return false;
         $Urp = $db->fetch("SELECT * FROM user_role WHERE id_user_role = $parent");

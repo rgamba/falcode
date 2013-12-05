@@ -78,13 +78,12 @@ class Core{
     * Estos archivos pueden ser Javascript, CSS o PHP
     * Los archivos que se incluyen automaticamente deben tener '_' como prefijo
     * al nombre del archivo
-    * 
     */
     public static function autoIncludeFiles(){
-        $TPL_DEF_PATH=Tpl::get(PATH);
-        $PATH_CSS=HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/css/";
-        $PATH_IMG=HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/images/";
-        $PATH_JS=HTTP_CONTENT_TEMPLATES.Tpl::get(ACTIVE)."/js/";
+        $TPL_DEF_PATH=Tpl::get('PATH');
+        $PATH_CSS=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/css/";
+        $PATH_IMG=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/images/";
+        $PATH_JS=HTTP_CONTENT_TEMPLATES.Tpl::get('ACTIVE')."/js/";
 
         /**
          * Handle engine includes
@@ -112,6 +111,8 @@ class Core{
                         $inc_file=false;
                     }
                     if($inc_file!=false){
+                        if(empty($_file[1]))
+                            $_file[1] = "";
                         if(substr($file,0,1)=="_" || $_file[1]=='req'){ // Required file
                             require_once($inc_file);
                             Sys::$PHP_Files[]=$inc_file;
@@ -162,6 +163,11 @@ class Core{
                     Sys::$JS_Files[]=$PATH_JS.$file;
             }
         }
+        // Auto include JS Module
+        /*if(SYS_AUTO_INCLUDE_MOD_JS){
+            if(file_exists($TPL_DEF_PATH.'js/'.DSP_MODULE.".js"))
+                Sys::$JS_Files[]=$PATH_JS.DSP_MODULE.".js";
+        }*/
         
         /**
          * Hande CSS Files
@@ -183,8 +189,8 @@ class Core{
             }
         }
         // Theme
-        if(Tpl::get(THEME)!=""){
-            Sys::$CSS_Files[]=HTTP_CONTENT_TEMPLATES."themes/".Tpl::get(THEME)."theme.css";
+        if(Tpl::get('THEME')!=""){
+            Sys::$CSS_Files[]=HTTP_CONTENT_TEMPLATES."themes/".Tpl::get('THEME')."theme.css";
         }
         // Auto include the js file for the module
         if(file_exists($TPL_DEF_PATH."css/".DSP_MODULE.".css"))

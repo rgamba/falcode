@@ -3,7 +3,7 @@
 class ErrorController extends Controller{
     public function __construct(){
         // Set default layout for all errors
-        $this->load->layout("layout.html");
+
     }
 
     public function ModuleNotFound($message,$module_requested){
@@ -34,7 +34,7 @@ class ErrorController extends Controller{
             )));
         }else{
             // Set session fwd location
-            if(!User::islogged()){
+            if(!ThisUser::islogged()){
                 $_SESSION['_login_fwd_'] = array(
                     'module' => DSP_MODULE,
                     'control' => DSP_CONTROL,
@@ -46,12 +46,14 @@ class ErrorController extends Controller{
     }
 
     public function Validation($arr){
+
+
         $fields = unserialize($arr);
         $err = array(
             'result' => 'error',
             'sys_error' => 'validation',
             'fields' => $fields,
-            'context' => $_REQUEST['context'],
+            'context' => @$_REQUEST['context'],
             'desc' => $this->system->getError()
         );
 
@@ -60,11 +62,12 @@ class ErrorController extends Controller{
             die(json_encode($err));
         }else{
             $this->system->setFlash('json',$err);
-            $_SESSION['test'] = 'prueba';
 
             if(Sys::get('redirect_on_error')){
+
                 redirect(Sys::get('redirect_on_error'),false,true);
             }else{
+
                 redirect($_SERVER['HTTP_REFERER'],false,true);
             }
             die();

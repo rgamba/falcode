@@ -6,10 +6,8 @@ class Session{
         //session_name(Sys::get("config")->session_name);
         ini_set('session.hash_function',1); // SHA1 algorithm
         ini_set('session.gc_maxlifetime', Sys::get("config")->session_expire);
-        ini_set('session.cookie_domain',Sys::get("config")->session_domain);
-        session_set_cookie_params(0, '/', Sys::get("config")->session_domain);
-
-        session_start();
+        //ini_set('session.cookie_domain',Sys::get("config")->session_domain);
+        //session_set_cookie_params(0, '/', Sys::get("config")->session_domain);
 
         if(Sys::get("config")->session_save_on_db == true){
             $Session = new Session();
@@ -64,8 +62,8 @@ class Session{
     }
 
     public function gc($max){
-        $max = date('U', time() - date('Z', $max)); // Max in GMT as stored in db
-        $old = date('U', time() - date('Z', time())) - $max;
+        $old = time() - $max; // Max in GMT as stored in db
+        $old = $this->db->escape($old);
         $this->db->query("DELETE FROM session WHERE last_activity < '$old'");
         return true;
     }

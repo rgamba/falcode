@@ -25,7 +25,7 @@ class ModuleController extends Controller{
             }
             $exe ++;
         }
-        echo "Executed: $exe";
+        //echo "Executed: $exe";
     }
 
     /**
@@ -36,10 +36,10 @@ class ModuleController extends Controller{
         $db = Db::getInstance();
         $sent = 0;
         while($sent < 10){
-            $mailer = $db->fetch("SELECT * FROM mailer WHERE enviado = 0 ORDER BY id_mailer ASC LIMIT 1");
+            $mailer = $db->fetch("SELECT * FROM mailer WHERE sent = 0 ORDER BY id_mailer ASC LIMIT 1");
             if($mailer->num_rows <= 0)
                 break;
-            $db->query("UPDATE mailer SET enviado = 1, fecha_enviado = now() WHERE id_mailer = " . $mailer->row['id_mailer']);
+            $db->query("UPDATE mailer SET sent = 1, date_sent = now() WHERE id_mailer = " . $mailer->row['id_mailer']);
             $Mail = new Mail(array(
                 'to' => $mailer->row['to'],
                 'from' => $mailer->row['from'],
@@ -52,7 +52,7 @@ class ModuleController extends Controller{
             $sent++;
             usleep(10);
         }
-        print("Sent: $sent");
+        //print("Sent: $sent");
     }
 
     /**
@@ -71,6 +71,6 @@ class ModuleController extends Controller{
                 $deleted++;
             }
         }
-        print("Deleted: $deleted");
+        //print("Deleted: $deleted");
     }
 }

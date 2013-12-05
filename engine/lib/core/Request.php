@@ -30,7 +30,7 @@ class Request{
             else
                 $g = stripslashes($g);
         }
-        $this->castVal(&$g,$cast);
+        $this->castVal($g,$cast);
         return $g;
     }
     
@@ -45,7 +45,7 @@ class Request{
         if(strpos($key,'[') !== false){
             $_key = str_replace(']','',$key);
             $_key = explode("[",$_key);
-            eval('$g = isset($_POST['.implode('][',$_key).']) ? $_POST['.implode('][',$_key).'] : null;');
+            eval('$g = @isset($_POST['.implode('][',$_key).']) ? @$_POST['.implode('][',$_key).'] : null;');
         }else{
             $g = isset($_POST[$key]) ? $_POST[$key] : null;
         }
@@ -58,7 +58,7 @@ class Request{
             else
                 $g = stripslashes($g);
         }
-        $this->castVal(&$g,$cast);
+        $this->castVal($g,$cast);
         if(!$return_object)
             return $g;
         else{
@@ -88,6 +88,10 @@ class Request{
     * 
     */
     public function isAjax(){
+        if(empty($_SERVER['HTTP_X_REQUESTED_WITH']))
+            $_SERVER['HTTP_X_REQUESTED_WITH'] ='';
+        if(empty(Router::$Control['ajax']))
+            Router::$Control['ajax'] = false;
         if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' || Router::$Control['ajax']==true)
             return true;
         return false;

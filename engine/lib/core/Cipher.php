@@ -11,9 +11,7 @@
 */
 class Cipher{
     public static $cipher=MCRYPT_RIJNDAEL_256;
-    public static $key=CRYPT_KEY;
     public static $mode=MCRYPT_MODE_CBC;
-    public static $iv=CRYPT_IV;
     
     private function __construct(){
         return false;
@@ -25,11 +23,13 @@ class Cipher{
     * @param mixed $text
     * @return string
     */
-    public static function encrypt($text=NULL,$key=NULL,$iv=NULL){
-        $key=empty($key) ? self::$key : $key;
-        $iv=empty($iv) ? self::$iv : $iv;
-        $enc=mcrypt_encrypt(self::$cipher,$key,$text,self::$mode,$iv);
-        return base64_encode($enc);
+    public static function encrypt($text=NULL,$key=NULL){
+        $key_size = mcrypt_get_key_size(self::$cipher, self::$mode);
+        $iv_size = mcrypt_get_iv_size(self::$cipher, self::$mode);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $key = substr(hash("sha256",$key),0,$key_size);
+        $enc=@mcrypt_encrypt(self::$cipher,$key,$text,self::$mode,$iv);
+        return base64_encode($iv.$enc);
     }
     
     /**
@@ -38,10 +38,13 @@ class Cipher{
     * @param string $enc
     * @return string
     */
-    public static function decrypt($enc=NULL,$key=NULL,$iv=NULL){
-        $key=empty($key) ? self::$key : $key;
-        $iv=empty($iv) ? self::$iv : $iv;
+    public static function decrypt($enc=NULL,$key=NULL){
+        $key_size = mcrypt_get_key_size(self::$cipher, self::$mode);
+        $iv_size = mcrypt_get_iv_size(self::$cipher, self::$mode);
+        $key = substr(hash("sha256",$key),0,$key_size);
         $enc=base64_decode($enc);
-        return rtrim(mcrypt_decrypt(self::$cipher,$key,$enc,self::$mode,$iv));
+        $iv = substr($enc, 0, $iv_size);
+        $enc = substr($enc, $iv_size);
+        return @mcrypt_decrypt(self::$cipher,$key,$enc,self::$mode,$iv);
     }
 }

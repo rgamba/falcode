@@ -175,6 +175,7 @@ abstract class Controller{
         global $BREADCRUMB;
         if(!empty($arr)){
             $this->breadcrumb=$arr;
+            Tpl::set('BREADCRUMB',$arr);
             $BREADCRUMB=$arr;
         }
         return $this->breadcrumb;
@@ -209,7 +210,9 @@ abstract class Controller{
     * depreciated: use Request::isAjax() instead
     */
     final public function isAjaxRequest(){
-        if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' || Router::$Control['ajax']==true)
+        if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']))
+            $_SERVER['HTTP_X_REQUESTED_WITH'] = '';
+        if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' || @Router::$Control['ajax']==true)
             return true;
         return false;
     }
@@ -228,7 +231,7 @@ abstract class Controller{
     * @param mixed $method
     * @return mixed
     */
-    final protected function __get($method){
+    final public function __get($method){
         switch($method){
             case "load":
                 if(empty($this->_load)){

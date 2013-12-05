@@ -72,7 +72,15 @@ abstract class ActiveRecord{
     private $rs;
     private $sql=null;
     private $cursor=0;
-    private $query=array();
+    private $query=array(
+        'select' => null,
+        'join' => array(),
+        'where' => null,
+        'group_by' => null,
+        'having' => null,
+        'limit' => null,
+        'order_by' => null
+    );
     private $memcached=false;
     private $result;
     
@@ -190,7 +198,7 @@ abstract class ActiveRecord{
         if(empty($cols)) $cols="*";
         if(count($params)>1){
             $rep=array_slice($params,1);
-            self::formatString(&$cols,$rep);
+            self::formatString($cols,$rep);
         }
         $this->query['select']=$cols;
         return $this;
@@ -219,7 +227,7 @@ abstract class ActiveRecord{
         }
         if(count($params)>1){
             $rep=array_slice($params,1);
-            self::formatString(&$sql,$rep);
+            self::formatString($sql,$rep);
         }
         $this->query['where'][]=$sql;
         return $this;
@@ -269,7 +277,7 @@ abstract class ActiveRecord{
         $sql=$params[0];
         if(count($params)>1){
             $rep=array_slice($params,1);
-            self::formatString(&$sql,$rep);
+            self::formatString($sql,$rep);
         }
         $this->query['having']='HAVING '.$sql;
         return $this;
@@ -300,7 +308,7 @@ abstract class ActiveRecord{
         if(empty($this->query))
             $this->query['select']="*";
         else{
-            if(is_array($this->query['select'])){
+            if(is_array(@$this->query['select'])){
                 $this->query['select'] = implode(',',$this->query['select']);
             }
         }
@@ -310,8 +318,8 @@ abstract class ActiveRecord{
         if(!empty($this->id) && empty($this->query['where'])){
             $wh="WHERE ".static::$primary_key." = ".$this->id;
         }
-        $this->buildConstraintQuery(&$wh);
-        $this->sql=sprintf("SELECT %s FROM `".static::$table_name."` ".static::$prefix." %s %s %s %s %s %s",empty($this->query['select']) ? '*' : $this->query['select'],implode(' ',$this->query['join']),$wh,$this->query['group_by'],$this->query['having'],$this->query['order_by'],$this->query['limit']);
+        $this->buildConstraintQuery($wh);
+        $this->sql=sprintf("SELECT %s FROM `".static::$table_name."` ".static::$prefix." %s %s %s %s %s %s",empty($this->query['select']) ? '*' : $this->query['select'],@implode(' ',$this->query['join']),$wh,@$this->query['group_by'],@$this->query['having'],@$this->query['order_by'],@$this->query['limit']);
         if($make_query){
             $this->result = $this->Db->query($this->sql);
             $this->rows=$this->Db->numRows();
@@ -340,7 +348,7 @@ abstract class ActiveRecord{
             return $this->_select($id);
         if(empty($fields))
             $fields="*";
-        $this->buildConstraintQuery(&$extraSQL);
+        $this->buildConstraintQuery($extraSQL);
         if(!empty($id) || isset($id))
             $this->id=$id;
         $where=null;
@@ -461,7 +469,7 @@ abstract class ActiveRecord{
                 if(is_null($fk['instance'])){
                     $constraint=array(
                         'local_key' => $fk['foreign_key'],
-                        'value' => $this->rs[$fk['local_key']],
+                        'value' => @$this->rs[$fk['local_key']],
                         'table' => static::$table_name
                     );
                     $fk['instance']=new $key(NULL,$constraint);
@@ -637,7 +645,7 @@ abstract class ActiveRecord{
             $this->constraint=array(
                 'table' => $constraint['table'],
                 'local_key' => $constraint['local_key'],
-                'foreign_key' => $constraint['foreign_key'],
+                'foreign_key' => @$constraint['foreign_key'],
                 'value' => $constraint['value']
             );
         }

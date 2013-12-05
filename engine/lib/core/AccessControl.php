@@ -212,7 +212,7 @@ class AccessControl{
         if(is_string($rol))
             $rol=new UserRole($rol);
         if(!($rol instanceof UserRole))
-            throw new Exception("$role must be a UserRole type");
+            throw new Exception("$rol must be a UserRole type");
         $roleId=$rol->getRoleId();
         if(!$this->getRoleRegistry()->roleExists($roleId))
             throw new Exception("The role <b>$roleId</b> is not yet registered in UserRoleRegistry");
@@ -247,8 +247,8 @@ class AccessControl{
                     continue;
                 $actions=$actions['actions'];
                 if(empty($actions) || in_array($action,$actions)){
-                    $_roleId=(isset($inheritedBy[self::ALLOW.".".$modName.(empty($actions) ? '' : ".".$act)]))
-                        ? $_roleId=$inheritedBy[self::ALLOW.".".$modName.(empty($actions) ? '' : ".".$act)]
+                    $_roleId=(isset($inheritedBy[self::ALLOW.".".$modName.(empty($actions) ? '' : ".".$action)]))
+                        ? $_roleId=$inheritedBy[self::ALLOW.".".$modName.(empty($actions) ? '' : ".".$action)]
                         : $roleId;
 
                     $tmpIndex=empty($actions) 

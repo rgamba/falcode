@@ -33,7 +33,7 @@ class Sys{
         self::setErrorMsg($err);
     }
     
-    public function getError($err){
+    public function getError(){
         return self::getErrorMsg();
     }
     
@@ -100,7 +100,7 @@ class Sys{
 	public static function get($key=''){
 		if(empty($key))
 			return false;
-		return self::$params[$key];
+		return empty(self::$params[$key]) ? null : self::$params[$key];
 	}
 	
     /**
@@ -137,7 +137,7 @@ class Sys{
     * 
     */
     public static function getInfoMsg(){
-        return $_SESSION['__msg__'];
+        return empty($_SESSION['__msg__']) ? '' : $_SESSION['__msg__'];
     }
     
     /**
@@ -145,7 +145,7 @@ class Sys{
     * 
     */
     public static function getErrorMsg(){
-        return $_SESSION['__error__'];
+        return empty($_SESSION['__error__']) ? '' : $_SESSION['__error__'];
     }
     
     /**
@@ -169,6 +169,8 @@ class Sys{
     }
 
     public static function updateFlash(){
+        if(empty($_SESSION['__flash_new__']))
+            $_SESSION['__flash_new__'] = '';
         $_SESSION['__flash__'] = $_SESSION['__flash_new__'];
         unset($_SESSION['__flash_new__']);
     }
